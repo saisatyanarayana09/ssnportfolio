@@ -1,40 +1,47 @@
+// ⚠️ WARNING: If your repository is public, GitHub may automatically revoke this token when pushed.
+const GITHUB_TOKEN = 'YOUR_NEW_TOKEN_HERE'; 
 const REPO_OWNER = 'saisatyanarayana09';
 const REPO_NAME = 'ssnportfolio';
 const FILE_PATH = 'data.json';
+
 let state = { hero: { meta: { dynamicText: [] }, media: {} }, education: [], certifications: [], projects: [], contact: {} };
 let currentSha = null;
-let currentToken = null;
 
 const saveIndicator = document.getElementById('save-indicator');
 
-// 1. Fetch data from GitHub on Login
-async function fetchFromGitHub(token) {
+// 1. Fetch data directly on page load
+async function fetchFromGitHub() {
+    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Loading data...`;
     try {
         const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            headers: { 'Authorization': `token ${token}` }
+            headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
         });
-        if (!res.ok) throw new Error("Invalid Token");
+        
+        if (!res.ok) {
+            // If file doesn't exist yet, we just start with empty state
+            saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> New Setup / No Data`;
+            return;
+        }
         
         const data = await res.json();
         currentSha = data.sha;
         state = JSON.parse(atob(data.content));
-        return true;
+        saveIndicator.innerHTML = `<div class="dot"></div> Live on Netlify`;
     } catch (err) {
         console.error(err);
-        return false;
+        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Connection Error`;
     }
 }
 
 // 2. Save Data to GitHub
-const saveStateToStorage = async () => {
-    if (!currentToken) return;
+window.saveStateToStorage = async () => {
     saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Saving to GitHub...`;
     
     try {
         const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
             method: 'PUT',
             headers: {
-                'Authorization': `token ${currentToken}`,
+                'Authorization': `token ${GITHUB_TOKEN}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -46,45 +53,25 @@ const saveStateToStorage = async () => {
 
         if (res.ok) {
             const data = await res.json();
-            currentSha = data.content.sha; // Update SHA for next save
+            currentSha = data.content.sha; 
             saveIndicator.innerHTML = `<div class="dot"></div> Live on Netlify`;
         } else {
             throw new Error("Failed to save");
         }
     } catch (err) {
-        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Save Failed`;
+        console.error(err);
+        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Save Failed (Token Revoked?)`;
+        alert("Failed to save to GitHub. Your token may have been automatically revoked for security.");
     }
 };
 
-// 3. Login Logic
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.innerText = "Authenticating...";
-    
-    const token = document.getElementById('gh-token').value;
-    const success = await fetchFromGitHub(token);
-    
-    if (success) {
-        currentToken = token;
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        initAdmin();
-    } else {
-        btn.innerText = "Authenticate & Load Data";
-        const form = document.getElementById('login-form');
-        form.classList.add('shake');
-        setTimeout(() => form.classList.remove('shake'), 400);
-        alert("Invalid Token or Repository not found.");
-    }
+// 3. Initialize immediately
+document.addEventListener("DOMContentLoaded", async () => {
+    await fetchFromGitHub();
+    initAdmin();
 });
 
-document.getElementById('logout-btn').addEventListener('click', () => {
-    currentToken = null;
-    window.location.reload(); 
-});
-
-// --- UI LOGIC (Kept exactly from your code) ---
+// --- UI LOGIC ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
