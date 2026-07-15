@@ -38,8 +38,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let state = null;
     
     try {
-        // Fetch the live data directly from data.json
-        const response = await fetch('data.json');
+        // 🚀 THE CACHE BUSTER: Forces the browser to pull the absolute newest data.json every time
+        const timestamp = new Date().getTime();
+        const response = await fetch(`data.json?t=${timestamp}`, { cache: "no-store" });
+        
         if (response.ok) {
             state = await response.json();
         } else {
