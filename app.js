@@ -1,5 +1,3 @@
-const STORAGE_KEY = 'portfolio_cms_state';
-
 const renderSection = (id, html) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -36,14 +34,24 @@ const typeEffect = (element, texts, wait = 3000) => {
     type();
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const state = stored ? JSON.parse(stored) : null;
-
-    if (!state) { 
-        console.error("No CMS Data found. Please login to Admin panel."); 
-        return; 
+document.addEventListener("DOMContentLoaded", async () => {
+    let state = null;
+    
+    try {
+        // Fetch the live data directly from data.json
+        const response = await fetch('data.json');
+        if (response.ok) {
+            state = await response.json();
+        } else {
+            console.error("No live data.json found. The portfolio is currently empty.");
+            return;
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return;
     }
+
+    if (!state) return;
 
     // 1. RENDER HERO
     if (state.hero && state.hero.name) {
@@ -178,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const brandLogo = document.querySelector('.top-right-brand');
         const heroSection = document.getElementById('hero');
 
-        // A. DEDICATED LOGO HIDER (Watches only the Hero Section)
+        // A. DEDICATED LOGO HIDER
         if (brandLogo && heroSection) {
             const logoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -209,9 +217,4 @@ document.addEventListener("DOMContentLoaded", () => {
         
         sections.forEach(sec => scrollSpy.observe(sec));
     }, 200);
-});
-
-// 8. AUTO-REFRESH MAGIC
-window.addEventListener('storage', (event) => {
-    if (event.key === STORAGE_KEY) window.location.reload();
 });
