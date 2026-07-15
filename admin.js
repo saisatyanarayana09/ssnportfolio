@@ -1,42 +1,90 @@
-const STORAGE_KEY = 'portfolio_cms_state';
-let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-    hero: { meta: { dynamicText: [] }, media: {} }, education: [], certifications: [], projects: [], contact: {}
-};
+const REPO_OWNER = 'saisatyanarayana09';
+const REPO_NAME = 'ssnportfolio';
+const FILE_PATH = 'data.json';
+let state = { hero: { meta: { dynamicText: [] }, media: {} }, education: [], certifications: [], projects: [], contact: {} };
+let currentSha = null;
+let currentToken = null;
 
 const saveIndicator = document.getElementById('save-indicator');
-const saveStateToStorage = () => {
-    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Saving...`;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    setTimeout(() => { saveIndicator.innerHTML = `<div class="dot"></div> All changes saved`; }, 600);
+
+// 1. Fetch data from GitHub on Login
+async function fetchFromGitHub(token) {
+    try {
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: { 'Authorization': `token ${token}` }
+        });
+        if (!res.ok) throw new Error("Invalid Token");
+        
+        const data = await res.json();
+        currentSha = data.sha;
+        state = JSON.parse(atob(data.content));
+        return true;
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
+// 2. Save Data to GitHub
+const saveStateToStorage = async () => {
+    if (!currentToken) return;
+    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Saving to GitHub...`;
+    
+    try {
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${currentToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "Update via Portfolio CMS",
+                content: btoa(JSON.stringify(state, null, 2)),
+                sha: currentSha
+            })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            currentSha = data.content.sha; // Update SHA for next save
+            saveIndicator.innerHTML = `<div class="dot"></div> Live on Netlify`;
+        } else {
+            throw new Error("Failed to save");
+        }
+    } catch (err) {
+        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Save Failed`;
+    }
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-    if(localStorage.getItem('cms_logged_in') === 'true') {
-        document.getElementById('auth-screen').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        initAdmin();
-    }
-});
-
-document.getElementById('login-form').addEventListener('submit', (e) => {
+// 3. Login Logic
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (document.getElementById('username').value === 'admin' && document.getElementById('password').value === 'password123') {
-        localStorage.setItem('cms_logged_in', 'true'); 
+    const btn = e.target.querySelector('button');
+    btn.innerText = "Authenticating...";
+    
+    const token = document.getElementById('gh-token').value;
+    const success = await fetchFromGitHub(token);
+    
+    if (success) {
+        currentToken = token;
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
         initAdmin();
     } else {
+        btn.innerText = "Authenticate & Load Data";
         const form = document.getElementById('login-form');
         form.classList.add('shake');
         setTimeout(() => form.classList.remove('shake'), 400);
+        alert("Invalid Token or Repository not found.");
     }
 });
 
 document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem('cms_logged_in');
+    currentToken = null;
     window.location.reload(); 
 });
 
+// --- UI LOGIC (Kept exactly from your code) ---
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
