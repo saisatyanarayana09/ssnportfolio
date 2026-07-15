@@ -31,7 +31,14 @@
       "to": ""
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "id": 1784134680659,
+      "title": "",
+      "desc": "",
+      "image": ""
+    }
+  ],
   "projects": [],
   "contact": {}
 }
