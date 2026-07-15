@@ -10,7 +10,7 @@
         body { background: var(--bg-app); color: var(--text-main); height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
         .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--bg-panel); border: 1px solid var(--border); padding: 2rem; border-radius: var(--radius); width: 350px; text-align: center; }
+        .auth-box { background: var(--bg-panel); border: 1px solid var(--border); padding: 2.5rem 2rem; border-radius: var(--radius); width: 380px; text-align: center; }
         .shake { animation: shake 0.4s; }
         .dashboard { display: flex; flex-direction: column; height: 100vh; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: var(--bg-app); }
@@ -47,10 +47,10 @@
 <body>
     <div id="auth-screen" class="auth-container">
         <form id="login-form" class="auth-box">
-            <h2 style="margin-bottom: 1.5rem; border:none; padding:0;">Admin Security</h2>
-            <input type="text" id="username" class="saas-input" placeholder="Username" required style="margin-bottom: 1rem;">
-            <input type="password" id="password" class="saas-input" placeholder="Password" required style="margin-bottom: 1.5rem;">
-            <button type="submit" class="btn-primary" style="width: 100%;">Authenticate</button>
+            <h2 style="margin-bottom: 1rem; border:none; padding:0;">Admin Security</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter your GitHub Personal Access Token to connect to the live repository.</p>
+            <input type="password" id="gh-token" class="saas-input" placeholder="ghp_..." required style="margin-bottom: 1.5rem;">
+            <button type="submit" class="btn-primary" style="width: 100%;">Authenticate & Load Data</button>
         </form>
     </div>
 
@@ -58,11 +58,11 @@
         <header class="admin-header">
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div style="font-weight: 600; letter-spacing: -0.5px;">Portfolio CMS</div>
-                <div class="save-indicator" id="save-indicator"><div class="dot"></div> All changes saved</div>
+                <div class="save-indicator" id="save-indicator"><div class="dot"></div> Live on Netlify</div>
             </div>
             <div style="display: flex; gap: 1rem;">
                 <a href="index.html" target="_blank" class="btn-outline">View Live Site</a>
-                <button id="logout-btn" class="btn-outline btn-danger">Logout</button>
+                <button id="logout-btn" class="btn-outline btn-danger">Disconnect</button>
             </div>
         </header>
         
