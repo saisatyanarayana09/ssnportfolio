@@ -1,118 +1,230 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS Dashboard</title>
-    <style>
-        :root { --bg-app: #0a0a0a; --bg-panel: #111111; --border: #27272a; --text-main: #ededed; --text-muted: #a1a1aa; --accent: #0070f3; --accent-hover: #0056b3; --danger: #ef4444; --success: #10b981; --radius: 6px; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-        body { background: var(--bg-app); color: var(--text-main); height: 100vh; overflow: hidden; }
-        .hidden { display: none !important; }
-        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--bg-panel); border: 1px solid var(--border); padding: 2.5rem 2rem; border-radius: var(--radius); width: 380px; text-align: center; }
-        .shake { animation: shake 0.4s; }
-        .dashboard { display: flex; flex-direction: column; height: 100vh; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: var(--bg-app); }
-        .admin-layout { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 260px; border-right: 1px solid var(--border); background: var(--bg-panel); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-        .nav-btn { display: flex; align-items: center; gap: 0.8rem; background: transparent; color: var(--text-muted); border: none; padding: 0.8rem 1rem; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; }
-        .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-        .nav-btn.active { background: rgba(0, 112, 243, 0.1); color: var(--accent); }
-        .nav-icon { width: 18px; height: 18px; fill: currentColor; }
-        .main-content { flex: 1; padding: 3rem 4rem; overflow-y: auto; background: var(--bg-app); }
-        .tab-pane { display: none; max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s; }
-        .tab-pane.active { display: block; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-        .saas-label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.5rem; }
-        .saas-input { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.7rem 1rem; border-radius: var(--radius); width: 100%; transition: all 0.2s; outline: none; margin-bottom: 1.5rem; font-size: 0.95rem; }
-        .saas-input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-        .btn-primary { background: var(--accent); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;}
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-decoration: none;}
-        .btn-outline:hover { background: rgba(255,255,255,0.05); }
-        .btn-danger { color: var(--danger) !important; border-color: rgba(239, 68, 68, 0.3) !important; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.1) !important; }
-        .accordion-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; background: var(--bg-panel); overflow: hidden; }
-        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; cursor: pointer; font-weight: 500; background: rgba(255,255,255,0.02); }
-        .accordion-header:hover { background: rgba(255,255,255,0.05); }
-        .accordion-body { padding: 1.5rem; border-top: 1px solid var(--border); display: none; }
-        .save-indicator { font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
-        .img-preview-box { width: 60px; height: 60px; border-radius: var(--radius); object-fit: cover; border: 1px solid var(--border); margin-top: 0.5rem; display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-    </style>
-</head>
-<body>
-    <div id="auth-screen" class="auth-container">
-        <form id="login-form" class="auth-box">
-            <h2 style="margin-bottom: 1rem; border:none; padding:0;">Admin Security</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter your GitHub Personal Access Token to connect to the live repository.</p>
-            <input type="password" id="gh-token" class="saas-input" placeholder="ghp_..." required style="margin-bottom: 1.5rem;">
-            <button type="submit" class="btn-primary" style="width: 100%;">Authenticate & Load Data</button>
-        </form>
-    </div>
+const REPO_OWNER = 'saisatyanarayana09';
+const REPO_NAME = 'ssnportfolio';
+const FILE_PATH = 'data.json';
+let state = { hero: { meta: { dynamicText: [] }, media: {} }, education: [], certifications: [], projects: [], contact: {} };
+let currentSha = null;
+let currentToken = null; // Stays perfectly empty until you log in!
 
-    <div id="admin-dashboard" class="hidden dashboard">
-        <header class="admin-header">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="font-weight: 600; letter-spacing: -0.5px;">Portfolio CMS</div>
-                <div class="save-indicator" id="save-indicator"><div class="dot"></div> Live on Netlify</div>
-            </div>
-            <div style="display: flex; gap: 1rem;">
-                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Save to GitHub</button>
-                <a href="index.html" target="_blank" class="btn-outline">View Live Site</a>
-                <button id="logout-btn" class="btn-outline btn-danger">Disconnect</button>
-            </div>
-        </header>
+const saveIndicator = document.getElementById('save-indicator');
+
+// 1. Fetch data from GitHub on Login
+async function fetchFromGitHub(token) {
+    try {
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            headers: { 'Authorization': `token ${token}` }
+        });
         
-        <div class="admin-layout">
-            <aside class="sidebar">
-                <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Hero Configuration</button>
-                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education</button>
-                <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Certifications</button>
-                <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Projects Matrix</button>
-            </aside>
-            <main class="main-content">
-                <div id="hero-tab" class="tab-pane active">
-                    <h2>Hero Configuration</h2>
-                    <label class="saas-label">Full Name</label>
-                    <input type="text" id="h-name" class="saas-input" placeholder="e.g. Jane Doe" onchange="updateHero('name', this.value)">
-                    <label class="saas-label">Job Title</label>
-                    <input type="text" id="h-title" class="saas-input" placeholder="e.g. Senior Frontend Engineer" onchange="updateHero('title', this.value)">
-                    <label class="saas-label">Value Proposition (Short bio)</label>
-                    <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="Building seamless web experiences..." onchange="updateHero('valueProp', this.value)"></textarea>
-                    <label class="saas-label">Dynamic Typewriter Text (Comma separated)</label>
-                    <input type="text" id="h-dynText" class="saas-input" placeholder="Coder, Designer, Creator" onchange="updateHeroMeta('dynamicText', this.value.split(',').map(s=>s.trim()))">
-                    <label class="saas-label">Background/Profile Photo (Auto-compresses to WebP/JPEG)</label>
-                    <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 0.5rem;" onchange="handleHeroImage(this)">
-                    <img id="h-photo-preview" class="img-preview-box hidden" alt="Hero Preview">
-                </div>
-                <div id="edu-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;">Education Timeline</h2>
-                        <button class="btn-primary" id="add-edu">+ Add Entry</button>
+        if (!res.ok) {
+            // If the file doesn't exist yet, we just return true and start with a blank slate
+            if (res.status === 404) return true;
+            throw new Error("Invalid Token");
+        }
+        
+        const data = await res.json();
+        currentSha = data.sha;
+        state = JSON.parse(atob(data.content));
+        return true;
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
+// 2. Save Data to GitHub
+window.saveStateToStorage = async () => {
+    if (!currentToken) return;
+    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Saving to GitHub...`;
+    
+    try {
+        const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${currentToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: "Update via Portfolio CMS",
+                content: btoa(JSON.stringify(state, null, 2)),
+                sha: currentSha
+            })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            currentSha = data.content.sha; // Update SHA for next save
+            saveIndicator.innerHTML = `<div class="dot"></div> Live on Netlify`;
+        } else {
+            throw new Error("Failed to save");
+        }
+    } catch (err) {
+        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Save Failed`;
+    }
+};
+
+// 3. Login Logic
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerText = "Authenticating...";
+    
+    const token = document.getElementById('gh-token').value;
+    const success = await fetchFromGitHub(token);
+    
+    if (success) {
+        currentToken = token;
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        initAdmin();
+    } else {
+        btn.innerText = "Authenticate & Load Data";
+        const form = document.getElementById('login-form');
+        form.classList.add('shake');
+        setTimeout(() => form.classList.remove('shake'), 400);
+        alert("Invalid Token or Repository not found.");
+    }
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    currentToken = null;
+    window.location.reload(); 
+});
+
+// --- UI LOGIC ---
+document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        e.currentTarget.classList.add('active'); 
+        document.getElementById(e.currentTarget.dataset.tab).classList.add('active');
+    });
+});
+
+const processImage = (file) => {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 800;
+                let width = img.width, height = img.height;
+                if (width > MAX_WIDTH) { height = height * (MAX_WIDTH / width); width = MAX_WIDTH; }
+                canvas.width = width; canvas.height = height;
+                canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', 0.7)); 
+            };
+        };
+    });
+};
+
+window.toggleAccordion = (element) => {
+    const body = element.nextElementSibling;
+    const icon = element.querySelector('.toggle-icon');
+    if (body.style.display === "none") {
+        body.style.display = "block";
+        icon.style.transform = "rotate(180deg)";
+    } else {
+        body.style.display = "none";
+        icon.style.transform = "rotate(0deg)";
+    }
+};
+
+window.updateArrayItem = (arrName, index, key, value) => {
+    state[arrName][index][key] = value;
+    saveStateToStorage();
+    if(key === 'title' || key === 'course') document.getElementById(`${arrName}-title-${index}`).innerText = value || 'New Item';
+};
+
+const renderList = (arrName, containerId) => {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    (state[arrName] || []).forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'accordion-item';
+        let inputsHtml = '';
+        if (arrName === 'education') {
+            inputsHtml = `
+                <label class="saas-label">Degree / Course</label>
+                <input type="text" class="saas-input" placeholder="e.g. B.Tech Computer Science" value="${item.course || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'course', this.value)">
+                <label class="saas-label">Institution Name</label>
+                <input type="text" class="saas-input" placeholder="e.g. Tech University" value="${item.institution || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'institution', this.value)">
+                <div style="display:flex; gap:1rem;">
+                    <div style="flex:1"><label class="saas-label">Start Year</label><input type="text" class="saas-input" placeholder="2020" value="${item.from || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'from', this.value)"></div>
+                    <div style="flex:1"><label class="saas-label">End Year</label><input type="text" class="saas-input" placeholder="2024" value="${item.to || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'to', this.value)"></div>
+                </div>`;
+        } else if (arrName === 'certifications' || arrName === 'projects') {
+            inputsHtml = `
+                <label class="saas-label">Title</label>
+                <input type="text" class="saas-input" placeholder="Enter title" value="${item.title || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'title', this.value)">
+                <label class="saas-label">Description</label>
+                <textarea class="saas-input" rows="3" placeholder="Enter description..." onchange="updateArrayItem('${arrName}', ${index}, 'desc', this.value)">${item.desc || ''}</textarea>
+                <label class="saas-label">Thumbnail Upload</label>
+                <input type="file" accept="image/*" class="saas-input" style="padding:0.5rem;" onchange="handleArrayImage(this, '${arrName}', ${index})">
+                <img id="${arrName}-preview-${index}" src="${item.image || ''}" class="img-preview-box ${item.image ? '' : 'hidden'}">`;
+        }
+        const displayTitle = item.title || item.course || `New ${arrName} Item`;
+        div.innerHTML = `
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <strong id="${arrName}-title-${index}">${displayTitle}</strong>
+                <div style="display:flex; align-items:center; gap: 1rem;">
+                    <div style="display:flex; gap:0.5rem;">
+                        <button class="btn-outline" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, -1)">↑</button>
+                        <button class="btn-outline" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, 1)">↓</button>
+                        <button class="btn-outline btn-danger" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); deleteItem('${arrName}', ${index})">✕</button>
                     </div>
-                    <div id="edu-list"></div>
+                    <span class="toggle-icon" style="transition: transform 0.2s;">▼</span>
                 </div>
-                <div id="cert-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;">Certifications</h2>
-                        <button class="btn-primary" id="add-cert">+ Add Entry</button>
-                    </div>
-                    <div id="cert-list"></div>
-                </div>
-                <div id="proj-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;">Projects Matrix</h2>
-                        <button class="btn-primary" id="add-proj">+ Add Entry</button>
-                    </div>
-                    <div id="proj-list"></div>
-                </div>
-            </main>
-        </div>
-    </div>
-    <script src="admin.js"></script>
-</body>
-</html>
+            </div>
+            <div class="accordion-body" style="display:none;">${inputsHtml}</div>`;
+        container.appendChild(div);
+    });
+};
+
+window.moveItem = (arrName, index, dir) => {
+    const arr = state[arrName];
+    if(index + dir < 0 || index + dir >= arr.length) return;
+    [arr[index], arr[index + dir]] = [arr[index + dir], arr[index]];
+    refreshLists(); saveStateToStorage();
+};
+window.deleteItem = (arrName, index) => { state[arrName].splice(index, 1); refreshLists(); saveStateToStorage(); };
+
+const refreshLists = () => { renderList('education', 'edu-list'); renderList('certifications', 'cert-list'); renderList('projects', 'proj-list'); };
+
+document.getElementById('add-edu').onclick = () => { state.education.push({id: Date.now(), course: '', institution: '', from: '', to: ''}); refreshLists(); saveStateToStorage(); };
+document.getElementById('add-cert').onclick = () => { state.certifications.push({id: Date.now(), title: '', desc: '', image: ''}); refreshLists(); saveStateToStorage(); };
+document.getElementById('add-proj').onclick = () => { state.projects.push({id: Date.now(), title: '', desc: '', image: ''}); refreshLists(); saveStateToStorage(); };
+
+window.handleArrayImage = async (inputElem, arrName, index) => {
+    if(inputElem.files[0]) {
+        const base64 = await processImage(inputElem.files[0]);
+        updateArrayItem(arrName, index, 'image', base64);
+        const preview = document.getElementById(`${arrName}-preview-${index}`);
+        if(preview) { preview.src = base64; preview.classList.remove('hidden'); }
+    }
+};
+window.handleHeroImage = async (inputElem) => {
+    if(inputElem.files[0]) {
+        const base64 = await processImage(inputElem.files[0]);
+        state.hero.media.profilePhoto = base64; saveStateToStorage();
+        const preview = document.getElementById('h-photo-preview');
+        preview.src = base64; preview.classList.remove('hidden');
+    }
+};
+
+window.updateHero = (key, val) => { state.hero[key] = val; saveStateToStorage(); };
+window.updateHeroMeta = (key, val) => { state.hero.meta[key] = val; saveStateToStorage(); };
+
+const initAdmin = () => {
+    document.getElementById('h-name').value = state.hero?.name || '';
+    document.getElementById('h-title').value = state.hero?.title || '';
+    document.getElementById('h-valueProp').value = state.hero?.valueProp || '';
+    document.getElementById('h-dynText').value = (state.hero?.meta?.dynamicText || []).join(', ');
+    if(state.hero?.media?.profilePhoto) {
+        const preview = document.getElementById('h-photo-preview');
+        preview.src = state.hero.media.profilePhoto; preview.classList.remove('hidden');
+    }
+    refreshLists();
+};
