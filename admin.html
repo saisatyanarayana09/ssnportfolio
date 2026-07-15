@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Dashboard</title>
+    <style>
+        :root { --bg-app: #0a0a0a; --bg-panel: #111111; --border: #27272a; --text-main: #ededed; --text-muted: #a1a1aa; --accent: #0070f3; --accent-hover: #0056b3; --danger: #ef4444; --success: #10b981; --radius: 6px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--bg-app); color: var(--text-main); height: 100vh; overflow: hidden; }
+        .hidden { display: none !important; }
+        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: var(--bg-panel); border: 1px solid var(--border); padding: 2rem; border-radius: var(--radius); width: 350px; text-align: center; }
+        .shake { animation: shake 0.4s; }
+        .dashboard { display: flex; flex-direction: column; height: 100vh; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: var(--bg-app); }
+        .admin-layout { display: flex; flex: 1; overflow: hidden; }
+        .sidebar { width: 260px; border-right: 1px solid var(--border); background: var(--bg-panel); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-btn { display: flex; align-items: center; gap: 0.8rem; background: transparent; color: var(--text-muted); border: none; padding: 0.8rem 1rem; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
+        .nav-btn.active { background: rgba(0, 112, 243, 0.1); color: var(--accent); }
+        .nav-icon { width: 18px; height: 18px; fill: currentColor; }
+        .main-content { flex: 1; padding: 3rem 4rem; overflow-y: auto; background: var(--bg-app); }
+        .tab-pane { display: none; max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s; }
+        .tab-pane.active { display: block; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .saas-label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .saas-input { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.7rem 1rem; border-radius: var(--radius); width: 100%; transition: all 0.2s; outline: none; margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .saas-input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+        .btn-primary { background: var(--accent); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;}
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-decoration: none;}
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-danger { color: var(--danger) !important; border-color: rgba(239, 68, 68, 0.3) !important; }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.1) !important; }
+        .accordion-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; background: var(--bg-panel); overflow: hidden; }
+        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; cursor: pointer; font-weight: 500; background: rgba(255,255,255,0.02); }
+        .accordion-header:hover { background: rgba(255,255,255,0.05); }
+        .accordion-body { padding: 1.5rem; border-top: 1px solid var(--border); display: none; }
+        .save-indicator { font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
+        .img-preview-box { width: 60px; height: 60px; border-radius: var(--radius); object-fit: cover; border: 1px solid var(--border); margin-top: 0.5rem; display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+    </style>
+</head>
+<body>
+    <div id="auth-screen" class="auth-container">
+        <form id="login-form" class="auth-box">
+            <h2 style="margin-bottom: 1.5rem; border:none; padding:0;">Admin Security</h2>
+            <input type="text" id="username" class="saas-input" placeholder="Username" required style="margin-bottom: 1rem;">
+            <input type="password" id="password" class="saas-input" placeholder="Password" required style="margin-bottom: 1.5rem;">
+            <button type="submit" class="btn-primary" style="width: 100%;">Authenticate</button>
+        </form>
+    </div>
+
+    <div id="admin-dashboard" class="hidden dashboard">
+        <header class="admin-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="font-weight: 600; letter-spacing: -0.5px;">Portfolio CMS</div>
+                <div class="save-indicator" id="save-indicator"><div class="dot"></div> All changes saved</div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="index.html" target="_blank" class="btn-outline">View Live Site</a>
+                <button id="logout-btn" class="btn-outline btn-danger">Logout</button>
+            </div>
+        </header>
+        
+        <div class="admin-layout">
+            <aside class="sidebar">
+                <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Hero Configuration</button>
+                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education</button>
+                <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Certifications</button>
+                <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Projects Matrix</button>
+            </aside>
+            <main class="main-content">
+                <div id="hero-tab" class="tab-pane active">
+                    <h2>Hero Configuration</h2>
+                    <label class="saas-label">Full Name</label>
+                    <input type="text" id="h-name" class="saas-input" placeholder="e.g. Jane Doe" onchange="updateHero('name', this.value)">
+                    <label class="saas-label">Job Title</label>
+                    <input type="text" id="h-title" class="saas-input" placeholder="e.g. Senior Frontend Engineer" onchange="updateHero('title', this.value)">
+                    <label class="saas-label">Value Proposition (Short bio)</label>
+                    <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="Building seamless web experiences..." onchange="updateHero('valueProp', this.value)"></textarea>
+                    <label class="saas-label">Dynamic Typewriter Text (Comma separated)</label>
+                    <input type="text" id="h-dynText" class="saas-input" placeholder="Coder, Designer, Creator" onchange="updateHeroMeta('dynamicText', this.value.split(',').map(s=>s.trim()))">
+                    <label class="saas-label">Background/Profile Photo (Auto-compresses to WebP/JPEG)</label>
+                    <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 0.5rem;" onchange="handleHeroImage(this)">
+                    <img id="h-photo-preview" class="img-preview-box hidden" alt="Hero Preview">
+                </div>
+                <div id="edu-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Education Timeline</h2>
+                        <button class="btn-primary" id="add-edu">+ Add Entry</button>
+                    </div>
+                    <div id="edu-list"></div>
+                </div>
+                <div id="cert-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Certifications</h2>
+                        <button class="btn-primary" id="add-cert">+ Add Entry</button>
+                    </div>
+                    <div id="cert-list"></div>
+                </div>
+                <div id="proj-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Projects Matrix</h2>
+                        <button class="btn-primary" id="add-proj">+ Add Entry</button>
+                    </div>
+                    <div id="proj-list"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="admin.js"></script>
+</body>
+</html>
