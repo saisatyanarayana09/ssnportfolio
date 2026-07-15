@@ -8,7 +8,15 @@
     },
     "name": "SAi Satya"
   },
-  "education": [],
+  "education": [
+    {
+      "id": 1784134450024,
+      "course": "",
+      "institution": "",
+      "from": "",
+      "to": ""
+    }
+  ],
   "certifications": [],
   "projects": [],
   "contact": {}
