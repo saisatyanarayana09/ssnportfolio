@@ -1,5 +1,5 @@
 // ⚠️ WARNING: If your repository is public, GitHub may automatically revoke this token when pushed.
-const GITHUB_TOKEN = 'YOUR_NEW_TOKEN_HERE'; 
+const GITHUB_TOKEN = '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'; 
 const REPO_OWNER = 'saisatyanarayana09';
 const REPO_NAME = 'ssnportfolio';
 const FILE_PATH = 'data.json';
