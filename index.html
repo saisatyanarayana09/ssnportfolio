@@ -1,68 +1,186 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sai Satyanarayana | Portfolio</title>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+:root {
+    --bg-base: #09090b; 
+    --glow-1: rgba(124, 58, 237, 0.12); 
+    --glow-2: rgba(56, 189, 248, 0.12); 
     
-    <!-- Developer Fonts: Inter, Plus Jakarta Sans, and Fira Code -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    --glass-bg: rgba(255, 255, 255, 0.03); 
+    --glass-border: rgba(255, 255, 255, 0.08); 
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    --text-main: #f8fafc; 
+    --text-muted: #94a3b8; 
+    --primary: #38bdf8; 
+    --success: #10b981; 
+    --danger: #ef4444;
+    
+    --font-heading: 'Plus Jakarta Sans', sans-serif; 
+    --font-body: 'Inter', sans-serif;
+}
 
-    <!-- Floating Top-Right Brand -->
-    <div class="top-right-brand">
-        <span class="brand-brackets">&lt;</span>SSN<span class="brand-brackets">/&gt;</span>
-    </div>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-    <!-- Floating Vertical Dock Navigation -->
-    <nav class="sidebar-nav">
-        <div class="nav-links">
-            <a href="#hero" class="nav-link active">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <span class="nav-text">Home</span>
-            </a>
-            <a href="#education" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                <span class="nav-text">Education</span>
-            </a>
-            <a href="#certifications" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                <span class="nav-text">Credentials</span>
-            </a>
-            <a href="#projects" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                <span class="nav-text">Projects</span>
-            </a>
-            <a href="#contact" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0 1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                <span class="nav-text">Contact</span>
-            </a>
-        </div>
-    </nav>
+body {
+    background-color: var(--bg-base);
+    background-image: 
+        radial-gradient(circle at 15% 50%, var(--glow-1), transparent 50%),
+        radial-gradient(circle at 85% 30%, var(--glow-2), transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-main); 
+    line-height: 1.6; 
+    min-height: 100vh;
+    font-family: var(--font-body);
+}
 
-    <!-- Main Content Containers -->
-    <main>
-        <!-- The app.js file will grab these IDs and fill them with data.json content -->
-        <section id="hero" class="hidden"></section>
-        <section id="education" class="scroll-reveal hidden"></section>
-        <section id="certifications" class="scroll-reveal hidden"></section>
-        <section id="projects" class="scroll-reveal hidden"></section>
-        <section id="contact" class="scroll-reveal hidden"></section>
-    </main>
+h1, h2, h3, h4, h5, h6, .nav-text, button, .section-title { font-family: var(--font-heading); }
+.glass-card, p, h1, h2, h3, h4, span { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
+.hidden { display: none !important; }
 
-    <!-- Footer -->
-    <footer style="text-align: center; padding: 2rem; color: var(--text-muted);">
-        <p style="font-family: var(--font-mono);">&lt;code&gt; Built with a Custom Serverless CMS &lt;/code&gt;</p>
-        <p style="font-size: 0.85rem; margin-top: 0.5rem;">© 2026 Sai Satyanarayana</p>
-    </footer>
+/* Base Glass Engine */
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--glass-shadow); padding: 1.5rem; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; }
+.glass-card:hover { box-shadow: 0 12px 40px 0 rgba(0,0,0,0.5); background: rgba(255, 255, 255, 0.06); }
 
-    <!-- Logic Engine -->
-    <script src="app.js"></script>
-</body>
-</html>
+/* --- BRAND LOGO --- */
+.top-right-brand {
+    position: fixed; top: 1.5rem; right: 1.5rem; padding: 0.6rem 1.2rem;
+    z-index: 1000; font-size: 1.2rem; font-weight: 800; border-radius: 12px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.brand-brackets { color: var(--primary); font-family: monospace; font-size: 1.3rem; }
+.top-right-brand.brand-hidden { opacity: 0 !important; pointer-events: none; transform: translateY(-20px); }
+
+/* --- THE FLOATING VERTICAL DOCK --- */
+.sidebar-nav {
+    position: fixed; top: 50%; left: 1.5rem; transform: translateY(-50%);
+    width: 70px; 
+    height: auto; max-height: 90vh;
+    padding: 2rem 0; z-index: 1000;
+    display: flex; flex-direction: column; align-items: flex-start;
+    border-radius: 30px; 
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    overflow: hidden; 
+    background: rgba(9, 9, 11, 0.6); 
+}
+
+@media screen and (min-width: 1025px) {
+    .sidebar-nav:hover { width: 210px; } 
+    .sidebar-nav:hover .nav-text { opacity: 1; transform: translateX(0); transition-delay: 0.1s;}
+}
+
+/* Links & Scroll Spy Active State */
+.nav-links { display: flex; flex-direction: column; gap: 1rem; width: 100%; padding: 0 10px; }
+.nav-link { 
+    display: flex; align-items: center; 
+    padding: 0.8rem 13px; 
+    width: 100%; color: var(--text-muted); text-decoration: none; border-radius: 12px; transition: color 0.3s, background 0.3s; overflow: hidden; 
+}
+.nav-link svg { width: 24px; height: 24px; min-width: 24px; margin-right: 1rem; margin-left: 0; }
+.nav-link:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.05); }
+.nav-link.active { color: var(--primary); background: rgba(56, 189, 248, 0.15); } 
+.nav-text { opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; white-space: nowrap; font-size: 0.95rem; } 
+
+/* --- HERO SECTION --- */
+#hero { padding: 0; min-height: 100vh; display: block; width: 100%; }
+
+.hero-bg { 
+    height: 100vh; 
+    width: 100vw; 
+    background-size: cover; 
+    background-position: center center; 
+    background-repeat: no-repeat;
+    position: relative; 
+}
+
+.hero-overlay { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: linear-gradient(to right, rgba(9,9,11,0.92) 0%, rgba(9,9,11,0.4) 60%, rgba(9,9,11,0.8) 100%);
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-start; 
+    justify-content: center; 
+    text-align: left; 
+    padding-left: 260px; 
+    padding-right: 2rem;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-title { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -2px; font-weight: 800; color: #ffffff; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.hero-subtitle { font-size: 2rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+.hero-typing { font-size: 1.5rem; font-weight: 500; color: #ffffff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+.hero-desc { font-size: 1.25rem; color: #e2e8f0; max-width: 600px; margin-top: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.scroll-indicator { position: absolute; bottom: 2rem; left: 50%; color: rgba(255,255,255,0.7); animation: bounce 2s infinite; transition: color 0.3s; z-index: 10; }
+.scroll-indicator:hover { color: var(--primary); }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -15px); } 60% { transform: translate(-50%, -7px); } }
+
+/* UI Elements */
+button { cursor: pointer; font-weight: 600; border-radius: 8px; border: none; transition: all 0.3s ease; }
+.btn-primary { background: rgba(56, 189, 248, 0.2); border: 1px solid var(--primary); color: var(--primary); padding: 0.6rem 1.2rem; backdrop-filter: blur(4px); text-decoration: none; display: inline-flex; justify-content: center; align-items: center;}
+.btn-primary:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+input, textarea { font-family: var(--font-body); width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 8px; outline: none; transition: border 0.3s ease; }
+input:focus, textarea:focus { border-color: var(--primary); }
+
+/* --- MAIN CONTENT WRAPPER --- */
+main { 
+    max-width: 1250px; 
+    margin: 0; 
+    padding: 2rem; 
+    padding-top: 2rem; 
+    padding-left: 260px; 
+}
+
+section { padding: 4rem 0; min-height: 50vh; display: flex; flex-direction: column; justify-content: center; scroll-margin-top: 5rem; }
+
+@media screen and (min-width: 1025px) {
+    #education, #certifications, #projects {
+        padding-left: 80px; 
+    }
+}
+
+.section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; display: inline-block;}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
+.img-preview { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; }
+
+/* Timeline */
+.timeline { border-left: 2px solid var(--glass-border); padding-left: 2rem; margin-left: 1rem; display: flex; flex-direction: column; gap: 2rem; }
+.timeline-item { position: relative; }
+.timeline-item::before { content: ''; position: absolute; left: -2.4rem; top: 1.5rem; width: 14px; height: 14px; background: var(--bg-base); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
+
+/* Effects */
+.typing { color: var(--primary); border-right: 2px solid var(--primary); animation: blink 0.75s step-end infinite; }
+.pulse-container { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--success); margin-bottom: 1rem; background: rgba(16, 185, 129, 0.1); padding: 0.3rem 0.8rem; border-radius: 20px; width: fit-content; border: 1px solid rgba(16, 185, 129, 0.2); font-weight: 600;}
+.pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse-anim 2s infinite; }
+.scroll-reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* --- 📱 TABLET & MOBILE FIX (< 1024px) --- */
+@media screen and (max-width: 1024px) {
+    main { padding-left: 2rem; padding-right: 2rem; padding-bottom: 100px; max-width: 100%; }
+    
+    .top-right-brand { top: 1rem; right: 1rem; padding: 0.5rem 1rem; font-size: 1rem; }
+    
+    .sidebar-nav {
+        top: auto; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 500px; padding: 0.8rem 1.5rem;
+        flex-direction: row; justify-content: space-between; align-items: center;
+        border-radius: 20px;
+    }
+    
+    .sidebar-nav:hover { width: 90%; } 
+    .nav-text { display: none !important; } 
+    .nav-links { flex-direction: row; justify-content: space-between; gap: 0; padding: 0; width: 100%; }
+    .nav-link { width: auto; padding: 0.5rem; justify-content: center; }
+    .nav-link svg { margin: 0; width: 22px; height: 22px; } 
+    
+    .hero-overlay { padding-left: 2rem; padding-right: 2rem; }
+    .section-title { font-size: 2rem; }
+    
+    .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    
+    .timeline { padding-left: 1rem; margin-left: 0.5rem; }
+    .timeline-item::before { left: -1.45rem; }
+}
