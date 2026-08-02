@@ -3,78 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS Dashboard</title>
+    <title>CMS Dashboard | Tactile Neumorphism</title>
     <style>
-        :root { --bg-app: #0a0a0a; --bg-panel: #111111; --border: #27272a; --text-main: #ededed; --text-muted: #a1a1aa; --accent: #0070f3; --accent-hover: #0056b3; --danger: #ef4444; --success: #10b981; --radius: 6px; }
+        :root {
+            /* The Tactile Dark Palette */
+            --bg-base: #26282B; 
+            --text-main: #E0E5EC; 
+            --text-muted: #8A92A3; 
+            --accent: #00D2FF; 
+            --danger: #FF4757; 
+            --success: #2ED573; 
+            --radius: 16px; 
+            
+            /* Neumorphic Shadow Engines */
+            --shadow-dark: rgba(0, 0, 0, 0.45);
+            --shadow-light: rgba(255, 255, 255, 0.05);
+            
+            /* Outset (Extruded components) */
+            --neu-out: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            /* Inset (Carved components) */
+            --neu-in: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            /* Pressed (Button Hover State) */
+            --neu-pressed: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+        }
+
+        /* Base Resets & Smooth Scrolling */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; }
-        body { background: var(--bg-app); color: var(--text-main); height: 100vh; overflow: hidden; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg-base); color: var(--text-main); height: 100vh; overflow: hidden; }
         .hidden { display: none !important; }
+
+        /* Custom Tactile Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); box-shadow: var(--neu-in); border-radius: 10px; margin: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-base); box-shadow: var(--neu-out); border-radius: 10px; border: 2px solid var(--bg-base); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* Layout & Typography */
+        h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem; color: var(--accent); padding-bottom: 1rem; border-bottom: 2px solid rgba(255,255,255,0.02); }
+        .saas-label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.8rem; padding-left: 0.5rem; }
+
+        /* The Auth Box */
         .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--bg-panel); border: 1px solid var(--border); padding: 2.5rem 2rem; border-radius: var(--radius); width: 380px; text-align: center; }
-        .shake { animation: shake 0.4s; }
-        .dashboard { display: flex; flex-direction: column; height: 100vh; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--border); background: var(--bg-app); }
+        .auth-box { background: var(--bg-base); padding: 3rem 2.5rem; border-radius: 24px; width: 400px; text-align: center; box-shadow: var(--neu-out); animation: floatIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+        /* Admin Dashboard Layout */
+        .dashboard { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.5s ease-out; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2.5rem; background: var(--bg-base); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); z-index: 10; }
         .admin-layout { display: flex; flex: 1; overflow: hidden; }
-        .sidebar { width: 260px; border-right: 1px solid var(--border); background: var(--bg-panel); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
-        .nav-btn { display: flex; align-items: center; gap: 0.8rem; background: transparent; color: var(--text-muted); border: none; padding: 0.8rem 1rem; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 0.95rem; font-weight: 500; transition: all 0.2s; }
-        .nav-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-main); }
-        .nav-btn.active { background: rgba(0, 112, 243, 0.1); color: var(--accent); }
-        .nav-icon { width: 18px; height: 18px; fill: currentColor; }
-        .main-content { flex: 1; padding: 3rem 4rem; overflow-y: auto; background: var(--bg-app); }
-        .tab-pane { display: none; max-width: 800px; margin: 0 auto; animation: fadeIn 0.3s; }
-        .tab-pane.active { display: block; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-        .saas-label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.5rem; }
-        .saas-input { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.7rem 1rem; border-radius: var(--radius); width: 100%; transition: all 0.2s; outline: none; margin-bottom: 1.5rem; font-size: 0.95rem; }
-        .saas-input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-        .btn-primary { background: var(--accent); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.9rem; transition: background 0.2s; display: inline-flex; align-items: center; justify-content: center; text-decoration: none;}
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: var(--radius); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-decoration: none;}
-        .btn-outline:hover { background: rgba(255,255,255,0.05); }
-        .btn-danger { color: var(--danger) !important; border-color: rgba(239, 68, 68, 0.3) !important; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.1) !important; }
-        .accordion-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; background: var(--bg-panel); overflow: hidden; }
-        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; cursor: pointer; font-weight: 500; background: rgba(255,255,255,0.02); }
-        .accordion-header:hover { background: rgba(255,255,255,0.05); }
-        .accordion-body { padding: 1.5rem; border-top: 1px solid var(--border); display: none; }
-        .save-indicator { font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
-        .img-preview-box { width: 60px; height: 60px; border-radius: var(--radius); object-fit: cover; border: 1px solid var(--border); margin-top: 0.5rem; display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .sidebar { width: 280px; background: var(--bg-base); padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; box-shadow: 10px 0 15px -3px rgba(0,0,0,0.1); z-index: 5; }
+        .main-content { flex: 1; padding: 3rem 5rem; overflow-y: auto; background: var(--bg-base); }
+
+        /* Nav Buttons (The Squishy Tabs) */
+        .nav-btn { display: flex; align-items: center; gap: 1rem; background: var(--bg-base); color: var(--text-muted); border: none; padding: 1rem 1.2rem; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 0.95rem; font-weight: 600; box-shadow: var(--bg-base); transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .nav-btn:hover { box-shadow: var(--neu-out); color: var(--text-main); transform: translateY(-2px); }
+        .nav-btn.active { box-shadow: var(--neu-in); color: var(--accent); transform: translateY(0); }
+        .nav-icon { width: 20px; height: 20px; fill: currentColor; transition: transform 0.4s; }
+        .nav-btn:hover .nav-icon { transform: scale(1.1); }
+
+        /* Tab Animations */
+        .tab-pane { display: none; max-width: 850px; margin: 0 auto; }
+        .tab-pane.active { display: block; animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        /* Inputs (Carved into the screen) */
+        .saas-input { background: var(--bg-base); border: none; color: var(--text-main); padding: 1rem 1.2rem; border-radius: var(--radius); width: 100%; margin-bottom: 2rem; font-size: 1rem; box-shadow: var(--neu-in); transition: all 0.3s ease; outline: none; }
+        .saas-input:focus { box-shadow: var(--neu-in), 0 0 0 2px rgba(0, 210, 255, 0.2); }
+        .saas-input::placeholder { color: #5A6070; }
+
+        /* Buttons (Physical Hardware keys) */
+        .btn-primary, .btn-outline { background: var(--bg-base); border: none; padding: 0.8rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: var(--neu-out); transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        .btn-primary { color: var(--accent); }
+        .btn-outline { color: var(--text-main); }
+        .btn-danger { color: var(--danger) !important; }
+        .btn-primary:hover, .btn-outline:hover { box-shadow: var(--neu-pressed); transform: scale(0.97); }
+        .btn-primary:active, .btn-outline:active { box-shadow: var(--neu-in); }
+
+        /* Accordions (Modular blocks) */
+        .accordion-item { border-radius: var(--radius); margin-bottom: 1.5rem; background: var(--bg-base); box-shadow: var(--neu-out); overflow: hidden; transition: all 0.3s ease; }
+        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .accordion-header:hover { color: var(--accent); }
+        .accordion-body { padding: 1.5rem; border-top: 2px solid rgba(255,255,255,0.02); box-shadow: var(--neu-in); }
+
+        /* Indicators & Previews */
+        .save-indicator { font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .img-preview-box { width: 70px; height: 70px; border-radius: var(--radius); object-fit: cover; box-shadow: var(--neu-in); margin-top: 0.5rem; display: block; border: 4px solid var(--bg-base); }
+
+        /* Keyframe Animations */
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes floatIn { 0% { opacity: 0; transform: translateY(40px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-12px); } 75% { transform: translateX(12px); } }
     </style>
 </head>
 <body>
+    <!-- AUTHENTICATION SCREEN -->
     <div id="auth-screen" class="auth-container">
         <form id="login-form" class="auth-box">
-            <h2 style="margin-bottom: 1rem; border:none; padding:0;">Admin Security</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter your GitHub Personal Access Token to connect to the live repository.</p>
+            <h2 style="margin-bottom: 1rem; border:none; padding:0;">System Login</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Enter your GitHub PAT to mount the storage drive.</p>
             <input type="password" id="gh-token" class="saas-input" placeholder="ghp_..." required style="margin-bottom: 1.5rem;">
-            <button type="submit" class="btn-primary" style="width: 100%;">Authenticate & Load Data</button>
+            <button type="submit" class="btn-primary" style="width: 100%;">Mount & Authenticate</button>
         </form>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div id="admin-dashboard" class="hidden dashboard">
         <header class="admin-header">
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <div style="font-weight: 600; letter-spacing: -0.5px;">Portfolio CMS</div>
-                <div class="save-indicator" id="save-indicator"><div class="dot"></div> Live on Netlify</div>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div style="font-weight: 700; letter-spacing: 1px; color: var(--accent);">CMS_CORE</div>
+                <div class="save-indicator" id="save-indicator"><div class="dot"></div> System Synced</div>
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Save to GitHub</button>
-                <a href="index.html" target="_blank" class="btn-outline">View Live Site</a>
-                <button id="logout-btn" class="btn-outline btn-danger">Disconnect</button>
+                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Force Sync to GitHub</button>
+                <a href="index.html" target="_blank" class="btn-outline">View Front-End</a>
+                <button id="logout-btn" class="btn-outline btn-danger">Eject</button>
             </div>
         </header>
         
         <div class="admin-layout">
+            <!-- SIDEBAR NAVIGATION -->
             <aside class="sidebar">
                 <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Hero Configuration</button>
-                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education</button>
+                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education Timeline</button>
                 <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Certifications</button>
                 <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Projects Matrix</button>
+                <button class="nav-btn" data-tab="contact-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> Contact & Forms</button>
             </aside>
+
+            <!-- MAIN WORKSPACE -->
             <main class="main-content">
+                
+                <!-- HERO TAB -->
                 <div id="hero-tab" class="tab-pane active">
                     <h2>Hero Configuration</h2>
                     <label class="saas-label">Full Name</label>
@@ -85,34 +145,66 @@
                     <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="Building seamless web experiences..." onchange="updateHero('valueProp', this.value)"></textarea>
                     <label class="saas-label">Dynamic Typewriter Text (Comma separated)</label>
                     <input type="text" id="h-dynText" class="saas-input" placeholder="Coder, Designer, Creator" onchange="updateHeroMeta('dynamicText', this.value.split(',').map(s=>s.trim()))">
+                    
                     <label class="saas-label">Background/Profile Photo (Auto-compresses to WebP/JPEG)</label>
-                    <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 0.5rem;" onchange="handleHeroImage(this)">
+                    <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 1rem;" onchange="handleHeroImage(this)">
                     <img id="h-photo-preview" class="img-preview-box hidden" alt="Hero Preview">
+
+                    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid rgba(255,255,255,0.02);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--accent);">Meta & Visibility Toggles</h3>
+                        <label class="saas-label">Location</label>
+                        <input type="text" id="h-location" class="saas-input" placeholder="e.g. Chennai, India" onchange="updateHeroMeta('location', this.value)">
+                        <label class="saas-label">Availability Status</label>
+                        <input type="text" id="h-avail" class="saas-input" placeholder="e.g. Available for immediate joining" onchange="updateHeroMeta('availability', this.value)">
+                        <div style="display: flex; gap: 2.5rem; margin-top: 1rem; padding: 1rem; background: var(--bg-base); box-shadow: var(--neu-in); border-radius: var(--radius);">
+                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; cursor: pointer; color: var(--text-main);">
+                                <input type="checkbox" id="t-social" style="width: 18px; height: 18px;" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showSocial = this.checked; saveStateToStorage();"> Show Social Media Icons
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; cursor: pointer; color: var(--text-main);">
+                                <input type="checkbox" id="t-clients" style="width: 18px; height: 18px;" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showClientLogos = this.checked; saveStateToStorage();"> Show Client Logos
+                            </label>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- EDUCATION TAB -->
                 <div id="edu-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid rgba(255,255,255,0.02); margin-bottom:2rem; padding-bottom:1rem;">
                         <h2 style="margin:0; border:none; padding:0;">Education Timeline</h2>
                         <button class="btn-primary" id="add-edu">+ Add Entry</button>
                     </div>
                     <div id="edu-list"></div>
                 </div>
+
+                <!-- CERTIFICATIONS TAB -->
                 <div id="cert-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid rgba(255,255,255,0.02); margin-bottom:2rem; padding-bottom:1rem;">
                         <h2 style="margin:0; border:none; padding:0;">Certifications</h2>
                         <button class="btn-primary" id="add-cert">+ Add Entry</button>
                     </div>
                     <div id="cert-list"></div>
                 </div>
+
+                <!-- PROJECTS TAB -->
                 <div id="proj-tab" class="tab-pane">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border); margin-bottom:2rem; padding-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid rgba(255,255,255,0.02); margin-bottom:2rem; padding-bottom:1rem;">
                         <h2 style="margin:0; border:none; padding:0;">Projects Matrix</h2>
                         <button class="btn-primary" id="add-proj">+ Add Entry</button>
                     </div>
                     <div id="proj-list"></div>
                 </div>
+
+                <!-- CONTACT TAB -->
+                <div id="contact-tab" class="tab-pane">
+                    <h2>Contact Form Integration</h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5;">Paste your endpoint URL from Web3Forms, Formspree, or Getform here. The public site will automatically route all form submissions to this address.</p>
+                    <label class="saas-label">Form Action URL (Endpoint)</label>
+                    <input type="url" id="c-endpoint" class="saas-input" placeholder="https://api.web3forms.com/submit" onchange="state.contact = state.contact || {}; state.contact.formEndpoint = this.value; saveStateToStorage();">
+                </div>
             </main>
         </div>
     </div>
+    
     <script src="admin.js"></script>
 </body>
 </html>
