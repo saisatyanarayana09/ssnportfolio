@@ -65,7 +65,6 @@ h1, h2, h3, h4, h5, h6, .nav-text, button, .section-title { font-family: var(--f
 }
 
 @media screen and (min-width: 1025px) {
-    /* FIX: Decreased expanded width to 210px to prevent overlapping content */
     .sidebar-nav:hover { width: 210px; } 
     .sidebar-nav:hover .nav-text { opacity: 1; transform: translateX(0); transition-delay: 0.1s;}
 }
@@ -77,24 +76,36 @@ h1, h2, h3, h4, h5, h6, .nav-text, button, .section-title { font-family: var(--f
     padding: 0.8rem 13px; 
     width: 100%; color: var(--text-muted); text-decoration: none; border-radius: 12px; transition: color 0.3s, background 0.3s; overflow: hidden; 
 }
-/* FIX: Reduced margin-right slightly so text fits inside the smaller 210px navbar */
 .nav-link svg { width: 24px; height: 24px; min-width: 24px; margin-right: 1rem; margin-left: 0; }
 .nav-link:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.05); }
 .nav-link.active { color: var(--primary); background: rgba(56, 189, 248, 0.15); } 
 .nav-text { opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; white-space: nowrap; font-size: 0.95rem; } 
 
 /* --- HERO SECTION --- */
-#hero { padding: 0; min-height: 100vh; display: block; }
-.hero-bg { height: 100vh; width: 100%; background-size: cover; background-position: center; background-attachment: fixed; position: relative; }
+#hero { padding: 0; min-height: 100vh; display: block; width: 100%; }
+
+.hero-bg { 
+    height: 100vh; 
+    width: 100vw; 
+    background-size: cover; 
+    background-position: center center; 
+    background-repeat: no-repeat;
+    position: relative; 
+}
 
 .hero-overlay { 
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-    background: linear-gradient(to right, rgba(9,9,11,0.9) 0%, rgba(9,9,11,0.3) 100%), linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(9,9,11,1) 100%);
-    display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; 
-    
-    /* FIX: Increased base padding to 260px for a perfectly clear safe zone */
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: linear-gradient(to right, rgba(9,9,11,0.92) 0%, rgba(9,9,11,0.4) 60%, rgba(9,9,11,0.8) 100%);
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-start; 
+    justify-content: center; 
+    text-align: left; 
     padding-left: 260px; 
     padding-right: 2rem;
+    width: 100%;
+    height: 100%;
 }
 
 .hero-title { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -2px; font-weight: 800; color: #ffffff; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
@@ -118,13 +129,11 @@ main {
     margin: 0; 
     padding: 2rem; 
     padding-top: 2rem; 
-    /* FIX: Perfectly matched with the 260px Hero safe zone */
     padding-left: 260px; 
 }
 
 section { padding: 4rem 0; min-height: 50vh; display: flex; flex-direction: column; justify-content: center; scroll-margin-top: 5rem; }
 
-/* 🌟 THE "SUBTLE STEP" DESKTOP INDENT LOGIC */
 @media screen and (min-width: 1025px) {
     #education, #certifications, #projects {
         padding-left: 80px; 
