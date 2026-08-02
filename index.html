@@ -3,48 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CMS Dashboard | Glassmorphism & Neon Matrix</title>
+    <style>
+        :root {
+            /* Glassmorphism Variables */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-bg-hover: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-border-light: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            
+            /* Text & Accents */
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --accent: #00F0FF; /* Default Accent */
+            --danger: #FF4757;
+            --success: #2ED573;
+            --radius: 20px;
+        }
+
+        /* Animated Colorful Background */
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #0f172a, #3b82f6, #8b5cf6, #ec4899, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * { box-sizing: border-box; }
+        .hidden { display: none !important; }
+
+        /* Custom Glass Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--glass-bg-hover); border-radius: 10px; border: 1px solid var(--glass-border); }
+
+        /* Typography */
+        h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 2rem; color: #fff; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .saas-label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.8rem; padding-left: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Base Glass Panel Class */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* The Auth Box */
+        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-box { border-radius: 24px; padding: 3.5rem 2.5rem; width: 420px; text-align: center; animation: floatIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+        /* Admin Dashboard Layout */
+        .dashboard { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.5s ease-out; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--glass-border); z-index: 10; }
+        .admin-layout { display: flex; flex: 1; overflow: hidden; margin: 1.5rem; gap: 1.5rem; }
+        
+        /* Glass Sidebar */
+        .sidebar { width: 280px; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; border-radius: var(--radius); }
+        .main-content { flex: 1; padding: 2.5rem 4rem; overflow-y: auto; border-radius: var(--radius); }
+
+        /* Nav Buttons (Glass Tabs Base) */
+        .nav-btn { 
+            display: flex; align-items: center; gap: 1rem; 
+            background: transparent; color: var(--text-muted); 
+            border: 1px solid transparent; padding: 1rem 1.2rem; 
+            border-radius: 12px; cursor: pointer; 
+            text-align: left; font-size: 0.95rem; font-weight: 600; 
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover { background: var(--glass-bg-hover); transform: translateX(5px); }
+        .nav-btn.active { background: var(--glass-bg-hover); border: 1px solid var(--glass-border-light); }
+        .nav-icon { width: 20px; height: 20px; fill: currentColor; transition: fill 0.3s ease; }
+
+        /* --- MODULE COLOR-CODING MATRIX --- */
+        
+        /* 1. Hero Tab - Cyber Cyan */
+        .nav-btn[data-tab="hero-tab"]:hover, .nav-btn[data-tab="hero-tab"].active { 
+            color: #00F0FF; border-color: rgba(0, 240, 255, 0.4); 
+            box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.15); 
+        }
+        .nav-btn[data-tab="hero-tab"]:hover .nav-icon, .nav-btn[data-tab="hero-tab"].active .nav-icon { fill: #00F0FF; }
+
+        /* 2. Education Tab - Laser Purple */
+        .nav-btn[data-tab="edu-tab"]:hover, .nav-btn[data-tab="edu-tab"].active { 
+            color: #A855F7; border-color: rgba(168, 85, 247, 0.4); 
+            box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.15); 
+        }
+        .nav-btn[data-tab="edu-tab"]:hover .nav-icon, .nav-btn[data-tab="edu-tab"].active .nav-icon { fill: #A855F7; }
+
+        /* 3. Certifications Tab - Sunset Amber */
+        .nav-btn[data-tab="cert-tab"]:hover, .nav-btn[data-tab="cert-tab"].active { 
+            color: #F59E0B; border-color: rgba(245, 158, 11, 0.4); 
+            box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.15); 
+        }
+        .nav-btn[data-tab="cert-tab"]:hover .nav-icon, .nav-btn[data-tab="cert-tab"].active .nav-icon { fill: #F59E0B; }
+
+        /* 4. Projects Tab - Neon Lime */
+        .nav-btn[data-tab="proj-tab"]:hover, .nav-btn[data-tab="proj-tab"].active { 
+            color: #10B981; border-color: rgba(16, 185, 129, 0.4); 
+            box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.15); 
+        }
+        .nav-btn[data-tab="proj-tab"]:hover .nav-icon, .nav-btn[data-tab="proj-tab"].active .nav-icon { fill: #10B981; }
+
+        /* 5. Contact Tab - Electric Magenta */
+        .nav-btn[data-tab="contact-tab"]:hover, .nav-btn[data-tab="contact-tab"].active { 
+            color: #EC4899; border-color: rgba(236, 72, 153, 0.4); 
+            box-shadow: inset 0 0 15px rgba(236, 72, 153, 0.15); 
+        }
+        .nav-btn[data-tab="contact-tab"]:hover .nav-icon, .nav-btn[data-tab="contact-tab"].active .nav-icon { fill: #EC4899; }
+
+        /* --------------------------------- */
+
+        /* Tab Animations */
+        .tab-pane { display: none; max-width: 850px; margin: 0 auto; }
+        .tab-pane.active { display: block; animation: slideUpFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        /* Glass Inputs */
+        .saas-input { 
+            background: rgba(0, 0, 0, 0.2); 
+            border: 1px solid var(--glass-border); 
+            color: #fff; 
+            padding: 1rem 1.2rem; 
+            border-radius: 12px; 
+            width: 100%; 
+            margin-bottom: 2rem; 
+            font-size: 1rem; 
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .saas-input:focus { background: rgba(0, 0, 0, 0.3); border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); }
+        .saas-input::placeholder { color: rgba(255,255,255,0.4); }
+
+        /* Glass Buttons */
+        .btn-primary, .btn-outline { 
+            background: var(--glass-bg); 
+            border: 1px solid var(--glass-border);
+            padding: 0.8rem 1.5rem; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+            transition: all 0.3s ease;
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+        .btn-primary { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+        .btn-danger { border-color: var(--danger) !important; color: #fff !important; }
+        .btn-primary:hover, .btn-outline:hover { background: var(--glass-bg-hover); border-color: #fff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* Glass Accordions */
+        .accordion-item { border-radius: 16px; margin-bottom: 1.5rem; overflow: hidden; transition: all 0.3s ease; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.1); }
+        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .accordion-header:hover { background: var(--glass-bg-hover); }
+        .accordion-body { padding: 1.5rem; border-top: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+
+        /* Indicators & Previews */
+        .save-indicator { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.6rem; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 1px;}
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .img-preview-box { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; margin-top: 0.5rem; display: block; border: 2px solid var(--glass-border); background: rgba(0,0,0,0.2); }
+
+        /* Animations */
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes floatIn { 0% { opacity: 0; transform: translateY(30px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-12px); } 75% { transform: translateX(12px); } }
+    </style>
 </head>
 <body>
-    
-    <div class="top-right-brand glass-card">
-        <span class="brand-brackets">&lt;</span>SSN<span class="brand-brackets">/&gt;</span>
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="auth-container">
+        <form id="login-form" class="auth-box glass-panel">
+            <h2 style="border:none; padding:0;">Admin Access</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem;">Authenticate to connect to the global state.</p>
+            <input type="password" id="gh-token" class="saas-input" placeholder="Enter GitHub PAT..." required style="margin-bottom: 2rem; text-align: center;">
+            <button type="submit" class="btn-primary" style="width: 100%; padding: 1rem;">Mount Dashboard</button>
+        </form>
     </div>
 
-    <aside class="sidebar-nav glass-card">
-        <nav class="nav-links">
-            <a href="#hero" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                <span class="nav-text">Home</span>
-            </a>
-            <a href="#education" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-                <span class="nav-text">Education</span>
-            </a>
-            <a href="#certifications" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
-                <span class="nav-text">Certifications</span>
-            </a>
-            <a href="#projects" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-                <span class="nav-text">Projects</span>
-            </a>
-            <a href="#contact" class="nav-link">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                <span class="nav-text">Contact</span>
-            </a>
-        </nav>
-    </aside>
+    <!-- MAIN DASHBOARD -->
+    <div id="admin-dashboard" class="hidden dashboard">
+        <header class="admin-header glass-panel" style="border-radius: 0 0 24px 24px; margin: 0 1.5rem; border-top: none;">
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div style="font-weight: 700; font-size: 1.2rem; letter-spacing: 2px; text-shadow: 0 2px 5px rgba(0,0,0,0.3);">PORTFOLIO<span style="color: var(--accent);">_CMS</span></div>
+                <div class="save-indicator" id="save-indicator"><div class="dot"></div> Live Synced</div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Force Sync to Repo</button>
+                <a href="index.html" target="_blank" class="btn-outline">View Site</a>
+                <button id="logout-btn" class="btn-outline btn-danger">Disconnect</button>
+            </div>
+        </header>
+        
+        <div class="admin-layout">
+            <!-- SIDEBAR NAVIGATION -->
+            <aside class="sidebar glass-panel">
+                <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Hero Config</button>
+                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education</button>
+                <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Credentials</button>
+                <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Projects</button>
+                <button class="nav-btn" data-tab="contact-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> Integrations</button>
+            </aside>
 
-    <section id="hero"></section>
+            <!-- MAIN WORKSPACE -->
+            <main class="main-content glass-panel">
+                
+                <!-- HERO TAB -->
+                <div id="hero-tab" class="tab-pane active">
+                    <h2>Hero Configuration</h2>
+                    <label class="saas-label">Full Name</label>
+                    <input type="text" id="h-name" class="saas-input" placeholder="e.g. Jane Doe" onchange="updateHero('name', this.value)">
+                    <label class="saas-label">Job Title</label>
+                    <input type="text" id="h-title" class="saas-input" placeholder="e.g. Senior Frontend Engineer" onchange="updateHero('title', this.value)">
+                    <label class="saas-label">Value Proposition (Short bio)</label>
+                    <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="Building seamless web experiences..." onchange="updateHero('valueProp', this.value)"></textarea>
+                    <label class="saas-label">Dynamic Typewriter Text (Comma separated)</label>
+                    <input type="text" id="h-dynText" class="saas-input" placeholder="Coder, Designer, Creator" onchange="updateHeroMeta('dynamicText', this.value.split(',').map(s=>s.trim()))">
+                    
+                    <label class="saas-label">Profile Photo (Auto-compresses)</label>
+                    <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 1rem;" onchange="handleHeroImage(this)">
+                    <img id="h-photo-preview" class="img-preview-box hidden" alt="Hero Preview">
 
-    <main id="portfolio-container">
-        <section id="education" class="scroll-reveal"></section>
-        <section id="certifications" class="scroll-reveal"></section>
-        <section id="projects" class="scroll-reveal"></section>
-        <section id="contact" class="scroll-reveal"></section>
-    </main>
-    <script src="app.js"></script>
+                    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
+                        <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Meta & Visibility Toggles</h3>
+                        <label class="saas-label">Location</label>
+                        <input type="text" id="h-location" class="saas-input" placeholder="e.g. Chennai, India" onchange="updateHeroMeta('location', this.value)">
+                        <label class="saas-label">Availability Status</label>
+                        <input type="text" id="h-avail" class="saas-input" placeholder="e.g. Available for immediate joining" onchange="updateHeroMeta('availability', this.value)">
+                        
+                        <div style="display: flex; gap: 2.5rem; margin-top: 1.5rem; padding: 1.5rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 16px;">
+                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; cursor: pointer; font-weight: 500;">
+                                <input type="checkbox" id="t-social" style="width: 20px; height: 20px; accent-color: var(--accent);" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showSocial = this.checked; saveStateToStorage();"> Show Social Media Icons
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; cursor: pointer; font-weight: 500;">
+                                <input type="checkbox" id="t-clients" style="width: 20px; height: 20px; accent-color: var(--accent);" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showClientLogos = this.checked; saveStateToStorage();"> Show Client Logos
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDUCATION TAB -->
+                <div id="edu-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Education Timeline</h2>
+                        <button class="btn-primary" id="add-edu">+ Add Entry</button>
+                    </div>
+                    <div id="edu-list"></div>
+                </div>
+
+                <!-- CERTIFICATIONS TAB -->
+                <div id="cert-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Certifications</h2>
+                        <button class="btn-primary" id="add-cert">+ Add Entry</button>
+                    </div>
+                    <div id="cert-list"></div>
+                </div>
+
+                <!-- PROJECTS TAB -->
+                <div id="proj-tab" class="tab-pane">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--glass-border); margin-bottom:2rem; padding-bottom:1rem;">
+                        <h2 style="margin:0; border:none; padding:0;">Projects Matrix</h2>
+                        <button class="btn-primary" id="add-proj">+ Add Entry</button>
+                    </div>
+                    <div id="proj-list"></div>
+                </div>
+
+                <!-- CONTACT TAB -->
+                <div id="contact-tab" class="tab-pane">
+                    <h2>Contact Integrations</h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.6;">Paste your endpoint URL from Web3Forms, Formspree, or Getform here. The public site will automatically route all form submissions to this secure address.</p>
+                    <label class="saas-label">Form Action URL (Endpoint)</label>
+                    <input type="url" id="c-endpoint" class="saas-input" placeholder="https://api.web3forms.com/submit" onchange="state.contact = state.contact || {}; state.contact.formEndpoint = this.value; saveStateToStorage();">
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="admin.js"></script>
 </body>
 </html>
