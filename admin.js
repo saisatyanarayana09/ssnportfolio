@@ -1,9 +1,10 @@
+// --- CONFIGURATION ---
 const REPO_OWNER = 'saisatyanarayana09';
 const REPO_NAME = 'ssnportfolio';
 const FILE_PATH = 'data.json';
-let state = { hero: { meta: { dynamicText: [] }, media: {} }, education: [], certifications: [], projects: [], contact: {} };
+let state = { hero: { meta: { dynamicText: [] }, toggles: {}, media: {} }, education: [], certifications: [], projects: [], contact: {} };
 let currentSha = null;
-let currentToken = null; // Stays perfectly empty until you log in!
+let currentToken = null; 
 
 const saveIndicator = document.getElementById('save-indicator');
 
@@ -15,14 +16,14 @@ async function fetchFromGitHub(token) {
         });
         
         if (!res.ok) {
-            // If the file doesn't exist yet, we just return true and start with a blank slate
-            if (res.status === 404) return true;
+            if (res.status === 404) return true; // File doesn't exist yet, start fresh
             throw new Error("Invalid Token");
         }
         
         const data = await res.json();
         currentSha = data.sha;
-        state = JSON.parse(atob(data.content));
+        // EMOJI FIX: Properly decode Unicode/Emojis from GitHub's Base64
+        state = JSON.parse(decodeURIComponent(escape(atob(data.content))));
         return true;
     } catch (err) {
         console.error(err);
@@ -33,7 +34,7 @@ async function fetchFromGitHub(token) {
 // 2. Save Data to GitHub
 window.saveStateToStorage = async () => {
     if (!currentToken) return;
-    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted);"></div> Saving to GitHub...`;
+    saveIndicator.innerHTML = `<div class="dot" style="background: var(--text-muted); box-shadow: none;"></div> Saving to GitHub...`;
     
     try {
         const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
@@ -43,29 +44,30 @@ window.saveStateToStorage = async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                message: "Update via Portfolio CMS",
-                content: btoa(JSON.stringify(state, null, 2)),
+                message: "Update via Neumorphic Portfolio CMS",
+                // EMOJI FIX: Properly encode Unicode/Emojis back to Base64
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2)))),
                 sha: currentSha
             })
         });
 
         if (res.ok) {
             const data = await res.json();
-            currentSha = data.content.sha; // Update SHA for next save
+            currentSha = data.content.sha;
             saveIndicator.innerHTML = `<div class="dot"></div> Live on Netlify`;
         } else {
             throw new Error("Failed to save");
         }
     } catch (err) {
-        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger);"></div> Save Failed`;
+        saveIndicator.innerHTML = `<div class="dot" style="background: var(--danger); box-shadow: 0 0 10px var(--danger);"></div> Save Failed`;
     }
 };
 
-// 3. Login Logic
+// 3. Authentication UI Logic
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
-    btn.innerText = "Authenticating...";
+    btn.innerText = "Mounting Drive...";
     
     const token = document.getElementById('gh-token').value;
     const success = await fetchFromGitHub(token);
@@ -76,11 +78,12 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         document.getElementById('admin-dashboard').classList.remove('hidden');
         initAdmin();
     } else {
-        btn.innerText = "Authenticate & Load Data";
+        btn.innerText = "Mount & Authenticate";
         const form = document.getElementById('login-form');
-        form.classList.add('shake');
-        setTimeout(() => form.classList.remove('shake'), 400);
-        alert("Invalid Token or Repository not found.");
+        form.style.animation = 'none';
+        void form.offsetWidth; // Reflow
+        form.style.animation = 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both';
+        alert("Authentication Failed. Check Token & Repo Permissions.");
     }
 });
 
@@ -89,7 +92,7 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     window.location.reload(); 
 });
 
-// --- UI LOGIC ---
+// 4. Tab Navigation
 document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -99,6 +102,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     });
 });
 
+// 5. Canvas Compression Engine
 const processImage = (file) => {
     return new Promise((resolve) => {
         const reader = new FileReader();
@@ -119,6 +123,7 @@ const processImage = (file) => {
     });
 };
 
+// 6. Accordion & Array Logic
 window.toggleAccordion = (element) => {
     const body = element.nextElementSibling;
     const icon = element.querySelector('.toggle-icon');
@@ -151,7 +156,7 @@ const renderList = (arrName, containerId) => {
                 <input type="text" class="saas-input" placeholder="e.g. B.Tech Computer Science" value="${item.course || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'course', this.value)">
                 <label class="saas-label">Institution Name</label>
                 <input type="text" class="saas-input" placeholder="e.g. Tech University" value="${item.institution || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'institution', this.value)">
-                <div style="display:flex; gap:1rem;">
+                <div style="display:flex; gap:1.5rem;">
                     <div style="flex:1"><label class="saas-label">Start Year</label><input type="text" class="saas-input" placeholder="2020" value="${item.from || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'from', this.value)"></div>
                     <div style="flex:1"><label class="saas-label">End Year</label><input type="text" class="saas-input" placeholder="2024" value="${item.to || ''}" onchange="updateArrayItem('${arrName}', ${index}, 'to', this.value)"></div>
                 </div>`;
@@ -162,20 +167,20 @@ const renderList = (arrName, containerId) => {
                 <label class="saas-label">Description</label>
                 <textarea class="saas-input" rows="3" placeholder="Enter description..." onchange="updateArrayItem('${arrName}', ${index}, 'desc', this.value)">${item.desc || ''}</textarea>
                 <label class="saas-label">Thumbnail Upload</label>
-                <input type="file" accept="image/*" class="saas-input" style="padding:0.5rem;" onchange="handleArrayImage(this, '${arrName}', ${index})">
+                <input type="file" accept="image/*" class="saas-input" style="padding:1rem;" onchange="handleArrayImage(this, '${arrName}', ${index})">
                 <img id="${arrName}-preview-${index}" src="${item.image || ''}" class="img-preview-box ${item.image ? '' : 'hidden'}">`;
         }
         const displayTitle = item.title || item.course || `New ${arrName} Item`;
         div.innerHTML = `
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <strong id="${arrName}-title-${index}">${displayTitle}</strong>
-                <div style="display:flex; align-items:center; gap: 1rem;">
+                <div style="display:flex; align-items:center; gap: 1.5rem;">
                     <div style="display:flex; gap:0.5rem;">
-                        <button class="btn-outline" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, -1)">↑</button>
-                        <button class="btn-outline" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, 1)">↓</button>
-                        <button class="btn-outline btn-danger" style="padding: 0.2rem 0.5rem;" onclick="event.stopPropagation(); deleteItem('${arrName}', ${index})">✕</button>
+                        <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 1.1rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, -1)">↑</button>
+                        <button class="btn-outline" style="padding: 0.3rem 0.6rem; font-size: 1.1rem;" onclick="event.stopPropagation(); moveItem('${arrName}', ${index}, 1)">↓</button>
+                        <button class="btn-outline btn-danger" style="padding: 0.3rem 0.6rem; font-size: 1.1rem;" onclick="event.stopPropagation(); deleteItem('${arrName}', ${index})">✕</button>
                     </div>
-                    <span class="toggle-icon" style="transition: transform 0.2s;">▼</span>
+                    <span class="toggle-icon" style="transition: transform 0.3s; color: var(--accent);">▼</span>
                 </div>
             </div>
             <div class="accordion-body" style="display:none;">${inputsHtml}</div>`;
@@ -217,14 +222,37 @@ window.handleHeroImage = async (inputElem) => {
 window.updateHero = (key, val) => { state.hero[key] = val; saveStateToStorage(); };
 window.updateHeroMeta = (key, val) => { state.hero.meta[key] = val; saveStateToStorage(); };
 
+// 7. Initialize Admin UI with Fetched Data
 const initAdmin = () => {
+    // Populate Hero Basic
     document.getElementById('h-name').value = state.hero?.name || '';
     document.getElementById('h-title').value = state.hero?.title || '';
     document.getElementById('h-valueProp').value = state.hero?.valueProp || '';
     document.getElementById('h-dynText').value = (state.hero?.meta?.dynamicText || []).join(', ');
+    
+    // Populate Hero Image
     if(state.hero?.media?.profilePhoto) {
         const preview = document.getElementById('h-photo-preview');
-        preview.src = state.hero.media.profilePhoto; preview.classList.remove('hidden');
+        preview.src = state.hero.media.profilePhoto; 
+        preview.classList.remove('hidden');
     }
+
+    // Populate Hero Meta & Contact & Toggles
+    const locInput = document.getElementById('h-location');
+    if (locInput) locInput.value = state.hero?.meta?.location || '';
+
+    const availInput = document.getElementById('h-avail');
+    if (availInput) availInput.value = state.hero?.meta?.availability || '';
+
+    const socialToggle = document.getElementById('t-social');
+    if (socialToggle) socialToggle.checked = state.hero?.toggles?.showSocial || false;
+
+    const clientsToggle = document.getElementById('t-clients');
+    if (clientsToggle) clientsToggle.checked = state.hero?.toggles?.showClientLogos || false;
+
+    const endpointInput = document.getElementById('c-endpoint');
+    if (endpointInput) endpointInput.value = state.contact?.formEndpoint || '';
+
+    // Render Arrays
     refreshLists();
 };
