@@ -14,7 +14,10 @@
     },
     "name": "Kothamasu<br> Sai Satyanarayana ",
     "title": "",
-    "valueProp": "Entry-level MCA graduate with a programming foundation in Python, and SQL and\nhands-on experience designing, developing, testing, and deploying a Django web application. Built\nParikshon AI on Render using PostgreSQL, Supabase, pgvector, the Hugging Face Inference API, user\nauthentication, usage controls, and chat-history management."
+    "valueProp": "Entry-level MCA graduate with a programming foundation in Python, and SQL and\nhands-on experience designing, developing, testing, and deploying a Django web application. Built\nParikshon AI on Render using PostgreSQL, Supabase, pgvector, the Hugging Face Inference API, user\nauthentication, usage controls, and chat-history management.",
+    "toggles": {
+      "showSocial": true
+    }
   },
   "education": [
     {
