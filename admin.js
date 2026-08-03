@@ -9,7 +9,7 @@ const FILE_PATH = 'data.json';
 let currentToken = '';
 let currentSha = '';
 let state = {
-    hero: { meta: {}, toggles: {} },
+    hero: { meta: {}, social: {} },
     education: [],
     certifications: [],
     projects: [],
@@ -24,12 +24,8 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     btn.innerText = "Authenticating...";
 
     try {
-        // Fetch data.json to validate token and get current file SHA
         const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
-            headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
+            headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
         });
 
         if (!response.ok) throw new Error("Invalid Token or Repo not found.");
@@ -38,17 +34,13 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         currentToken = token;
         currentSha = data.sha;
         
-        // Decode JSON safely (Handles emojis and special characters)
         const decoded = decodeURIComponent(escape(atob(data.content)));
         state = JSON.parse(decoded);
 
-        // Hide Login, Show Dashboard
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('admin-dashboard').classList.remove('hidden');
         
-        // Initialize Dashboard Fields
         initDashboard();
-
     } catch (error) {
         console.error(error);
         alert("Login failed! Check your token, username, and repo name.");
@@ -77,7 +69,6 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 
 // 4. DATA BINDING & INITIALIZATION
 function initDashboard() {
-    // Populate Hero Tab
     if (state.hero) {
         document.getElementById('h-name').value = state.hero.name || '';
         document.getElementById('h-title').value = state.hero.title || '';
@@ -88,9 +79,9 @@ function initDashboard() {
             document.getElementById('h-location').value = state.hero.meta.location || '';
             document.getElementById('h-avail').value = state.hero.meta.availability || '';
         }
-        if (state.hero.toggles) {
-            document.getElementById('t-social').checked = !!state.hero.toggles.showSocial;
-            document.getElementById('t-clients').checked = !!state.hero.toggles.showClientLogos;
+        if (state.hero.social) {
+            document.getElementById('h-github').value = state.hero.social.github || '';
+            document.getElementById('h-linkedin').value = state.hero.social.linkedin || '';
         }
         if (state.hero.media && state.hero.media.profilePhoto) {
             const preview = document.getElementById('h-photo-preview');
@@ -99,18 +90,16 @@ function initDashboard() {
         }
     }
     
-    // Populate Contact Tab
     if (state.contact) {
         document.getElementById('c-endpoint').value = state.contact.formEndpoint || '';
     }
 
-    // Render Arrays
     renderList('edu-list', state.education, 'education');
     renderList('cert-list', state.certifications, 'certifications');
     renderList('proj-list', state.projects, 'projects');
 }
 
-// 5. UPDATE FUNCTIONS (Triggered by HTML onchange)
+// 5. UPDATE FUNCTIONS 
 window.updateHero = (key, value) => {
     state.hero = state.hero || {};
     state.hero[key] = value;
@@ -122,7 +111,12 @@ window.updateHeroMeta = (key, value) => {
     state.hero.meta[key] = value;
 };
 
-// Auto-Compress Profile Image via HTML5 Canvas
+window.updateHeroSocial = (platform, value) => {
+    state.hero = state.hero || {};
+    state.hero.social = state.hero.social || {};
+    state.hero.social[platform] = value;
+};
+
 window.handleHeroImage = (input) => {
     const file = input.files[0];
     if (!file) return;
@@ -137,7 +131,7 @@ window.handleHeroImage = (input) => {
             canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% quality
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7); 
             
             state.hero = state.hero || {};
             state.hero.media = state.hero.media || {};
@@ -152,7 +146,7 @@ window.handleHeroImage = (input) => {
     reader.readAsDataURL(file);
 };
 
-// 6. DYNAMIC LIST RENDERING (Education, Certifications, Projects)
+// 6. DYNAMIC LIST RENDERING 
 function renderList(containerId, arrayData, type) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -182,7 +176,6 @@ window.removeItem = (type, index) => {
     renderList(`${type === 'education' ? 'edu' : type === 'certifications' ? 'cert' : 'proj'}-list`, state[type], type);
 };
 
-// Add Item Buttons
 document.getElementById('add-edu').addEventListener('click', () => {
     state.education = state.education || [];
     state.education.push({ course: '', institution: '', from: '', to: '' });
@@ -208,7 +201,6 @@ window.saveStateToStorage = async () => {
     const closeBtn = document.getElementById('modal-close');
     const saveBtn = document.getElementById('manual-save-btn');
 
-    // Trigger Modal
     modal.classList.remove('hidden');
     spinner.classList.remove('hidden');
     closeBtn.classList.add('hidden');
@@ -216,48 +208,34 @@ window.saveStateToStorage = async () => {
     text.style.color = "var(--text-main)";
     subtext.innerText = "Please do not close this tab.";
     subtext.classList.remove('hidden');
-    
     saveBtn.disabled = true; 
     saveBtn.innerText = "Syncing...";
 
     try {
         const content = btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2))));
-        
-        const body = {
-            message: "CMS Update: Data Synced via Admin Panel",
-            content: content,
-            sha: currentSha
-        };
+        const body = { message: "CMS Update: Data Synced via Admin Panel", content: content, sha: currentSha };
 
         const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
             method: 'PUT',
-            headers: {
-                'Authorization': `token ${currentToken}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Authorization': `token ${currentToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
 
         if (!response.ok) throw new Error("GitHub API rejected the update");
-
         const data = await response.json();
-        currentSha = data.content.sha; // Update SHA
+        currentSha = data.content.sha; 
 
-        // Success state
         spinner.classList.add('hidden');
         subtext.classList.add('hidden');
         text.innerText = "Data Successfully Synchronized!";
         text.style.color = "var(--success)";
 
-        // Auto close modal
         setTimeout(() => {
             modal.classList.add('hidden');
             saveBtn.disabled = false;
-            saveBtn.innerText = "Force Sync to Repo";
+            saveBtn.innerText = "Save to GitHub";
         }, 1500);
-
     } catch (error) {
-        // Error state
         console.error("Save Error:", error);
         spinner.classList.add('hidden');
         subtext.classList.add('hidden');
@@ -265,6 +243,6 @@ window.saveStateToStorage = async () => {
         text.style.color = "var(--danger)"; 
         closeBtn.classList.remove('hidden');
         saveBtn.disabled = false;
-        saveBtn.innerText = "Force Sync to Repo";
+        saveBtn.innerText = "Save to GitHub";
     }
 };
