@@ -27,7 +27,7 @@ const typeEffect = (element, texts, wait = 3000) => {
         }
         else { 
             isDeleting = !isDeleting; 
-            if (!isDeleting) txtIndex++; // Successfully moves to the next word
+            if (!isDeleting) txtIndex++;
             setTimeout(type, isDeleting ? wait : 500); 
         }
     };
@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     let state = null;
     
     try {
-        // 🚀 THE CACHE BUSTER: Forces the browser to pull the absolute newest data.json every time
         const timestamp = new Date().getTime();
         const response = await fetch(`data.json?t=${timestamp}`, { cache: "no-store" });
         
@@ -55,15 +54,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!state) return;
 
-    // 1. RENDER HERO (Split Layout)
+    // 1. RENDER HERO (Hybrid Layout: Split Desktop / Fullscreen Mobile)
     if (state.hero && state.hero.name) {
         const h = state.hero;
         
-        // Dynamic Meta Badges
+        // Fetch Image for Mobile Background
+        const bgImage = h.media?.profilePhoto ? `background-image: url('${h.media.profilePhoto}');` : 'background: var(--bg-base);';
+
         const availHtml = h.meta?.availability ? `<div class="pulse-container"><div class="pulse"></div> ${h.meta.availability}</div>` : '';
         const locHtml = h.meta?.location ? `<div class="location-badge" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.3rem 0.8rem; border-radius: 20px; border: 1px solid var(--glass-border); font-weight: 600;">📍 ${h.meta.location}</div>` : '';
         
-        // Social Toggle Logic
         const socialHtml = h.toggles?.showSocial ? `
             <div class="social-links" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: flex-start;">
                 <a href="#" target="_blank" class="btn-outline">GitHub</a>
@@ -71,6 +71,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>` : '';
             
         renderSection('hero', `
+            <!-- This background is hidden on Desktop, visible on Mobile -->
+            <div class="mobile-hero-bg" style="${bgImage}"></div>
+            <div class="mobile-hero-overlay"></div>
+
             <div class="hero-content">
                 <div class="hero-text">
                     <div class="hero-badges" style="display: flex; gap: 1rem; justify-content: flex-start; margin-bottom: 1.5rem;">
@@ -83,6 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     ${socialHtml}
                 </div>
                 
+                <!-- This glass card is visible on Desktop, hidden on Mobile -->
                 <div class="hero-visual">
                     <div class="hero-image-wrapper glass-card">
                         ${h.media?.profilePhoto ? `<img src="${h.media.profilePhoto}" class="hero-img" alt="Profile Photo">` : `<div style="color: var(--text-muted); text-align:center; padding: 4rem;">No Image Uploaded</div>`}
@@ -102,10 +107,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // 2. RENDER EDUCATION TIMELINE
-    // Filter out blank entries
+    // 2. RENDER EDUCATION
     const validEdu = (state.education || []).filter(e => e.course || e.institution);
-    
     const renderTimeline = (arr, mapper) => arr && arr.length ? `<div class="timeline">${arr.map(mapper).join('')}</div>` : '';
     const eduHTML = validEdu.length 
         ? `<h2 class="section-title">Education Timeline</h2>` + renderTimeline(validEdu, e => `
@@ -118,10 +121,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderSection('education', eduHTML);
 
     // 3. RENDER CONTENT GRIDS
-    // Filter out blank entries so empty cards don't render
     const validCerts = (state.certifications || []).filter(c => c.title);
     const validProjs = (state.projects || []).filter(p => p.title);
-    
     const renderCards = (arr, mapper) => arr && arr.length ? `<div class="grid">${arr.map(mapper).join('')}</div>` : '';
     
     const certHTML = validCerts.length 
@@ -144,9 +145,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         : '';
     renderSection('projects', projHTML);
 
-    // 4. RENDER CONTACT FORM (Dynamic Endpoint)
+    // 4. RENDER CONTACT FORM 
     const formEndpoint = state.contact?.formEndpoint || 'https://api.web3forms.com/submit';
-    
     renderSection('contact', `
         <div class="glass-card" style="max-width: 600px; margin: 0 auto; width: 100%;">
             <h2 class="section-title" style="border:none; text-align:center; width:100%;">Let's Build Together</h2>
@@ -167,19 +167,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const form = document.getElementById('contact-form');
         const status = document.getElementById('form-status');
         const btn = document.getElementById('submit-btn');
-        
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault(); 
                 btn.innerText = "Sending..."; 
-                
                 try {
-                    // Uses the dynamic endpoint from the CMS!
-                    const response = await fetch(formEndpoint, { 
-                        method: 'POST', 
-                        body: new FormData(form) 
-                    });
-                    
+                    const response = await fetch(formEndpoint, { method: 'POST', body: new FormData(form) });
                     if (response.ok) {
                         form.reset(); 
                         btn.innerText = "Send Message";
@@ -187,9 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         status.style.color = "var(--success)";
                         status.style.display = "block";
                         setTimeout(() => { status.style.display = "none"; }, 5000);
-                    } else {
-                        throw new Error('Failed');
-                    }
+                    } else { throw new Error('Failed'); }
                 } catch (error) {
                     btn.innerText = "Send Message";
                     status.innerText = "Something went wrong. Please try again.";
@@ -203,11 +194,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 6. SCROLL REVEAL ANIMATIONS
     setTimeout(() => {
         const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => { 
-                if (e.isIntersecting) e.target.classList.add('visible'); 
-            });
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.1 });
-        
         document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
     }, 100); 
 
@@ -218,35 +206,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         const brandLogo = document.querySelector('.top-right-brand');
         const heroSection = document.getElementById('hero');
 
-        // A. DEDICATED LOGO HIDER
         if (brandLogo && heroSection) {
             const logoObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        brandLogo.classList.remove('brand-hidden');
-                    } else {
-                        brandLogo.classList.add('brand-hidden');
-                    }
+                    if (entry.isIntersecting) { brandLogo.classList.remove('brand-hidden'); } 
+                    else { brandLogo.classList.add('brand-hidden'); }
                 });
             }, { threshold: 0.1 }); 
             logoObserver.observe(heroSection);
         }
 
-        // B. NAVIGATION HIGHLIGHTS
         const scrollSpy = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const currentId = entry.target.getAttribute('id');
                     navLinks.forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${currentId}`) {
-                            link.classList.add('active');
-                        }
+                        if (link.getAttribute('href') === `#${currentId}`) link.classList.add('active');
                     });
                 }
             });
         }, { threshold: 0.3 }); 
-        
         sections.forEach(sec => scrollSpy.observe(sec));
     }, 200);
 });
