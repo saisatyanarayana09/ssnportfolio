@@ -97,14 +97,18 @@ section {
     flex-direction: column; 
     justify-content: center; 
     scroll-margin-top: 5rem; 
-    max-width: 1200px; 
+    max-width: 1100px; 
 }
 
-/* --- HERO SECTION (SPLIT LAYOUT) --- */
+/* --- HERO SECTION (DESKTOP: SPLIT LAYOUT) --- */
 #hero { 
     min-height: 100vh; 
     position: relative;
+    display: flex;
+    align-items: center;
 }
+
+.mobile-hero-bg, .mobile-hero-overlay { display: none; }
 
 .hero-content {
     display: flex;
@@ -112,6 +116,7 @@ section {
     justify-content: space-between;
     gap: 4rem;
     width: 100%;
+    z-index: 5;
 }
 
 .hero-text {
@@ -134,13 +139,13 @@ section {
 .hero-image-wrapper {
     width: 100%;
     max-width: 400px;
-    aspect-ratio: 4/5; /* Gives it a nice portrait shape */
-    padding: 10px; /* Acts as a glass border frame */
+    aspect-ratio: 4/5;
+    padding: 10px;
     border-radius: 24px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 10px 40px rgba(56, 189, 248, 0.15); /* Soft cyan glow */
-    transform: rotate(2deg); /* Stylish slight tilt */
+    box-shadow: 0 10px 40px rgba(56, 189, 248, 0.15); 
+    transform: rotate(2deg); 
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
@@ -152,7 +157,7 @@ section {
 .hero-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures your photo fills the box perfectly without stretching */
+    object-fit: cover; 
     border-radius: 16px;
 }
 
@@ -178,12 +183,10 @@ input:focus, textarea:focus { border-color: var(--primary); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
 .img-preview { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--glass-border); }
 
-/* Timeline */
 .timeline { border-left: 2px solid var(--glass-border); padding-left: 2rem; margin-left: 1rem; display: flex; flex-direction: column; gap: 2rem; }
 .timeline-item { position: relative; }
 .timeline-item::before { content: ''; position: absolute; left: -2.4rem; top: 1.5rem; width: 14px; height: 14px; background: var(--bg-base); border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
 
-/* Effects */
 .typing { color: var(--primary); border-right: 2px solid var(--primary); animation: blink 0.75s step-end infinite; }
 .pulse-container { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--success); margin-bottom: 1rem; background: rgba(16, 185, 129, 0.1); padding: 0.3rem 0.8rem; border-radius: 20px; width: fit-content; border: 1px solid rgba(16, 185, 129, 0.2); font-weight: 600;}
 .pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); animation: pulse-anim 2s infinite; }
@@ -218,21 +221,57 @@ input:focus, textarea:focus { border-color: var(--primary); }
     
     section { padding: 4rem 0; }
     
-    /* Mobile Hero Fix */
-    #hero { min-height: auto; padding-top: 5rem; }
-    .hero-content {
-        flex-direction: column-reverse; /* Puts image on top of text on mobile */
-        gap: 3rem;
+    /* --- Mobile Hero Fix (Revert to Original Full Background) --- */
+    #hero { 
+        min-height: 100vh; 
+        padding: 0;
+        margin-left: -2rem; /* Break out of padding */
+        width: 100vw;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
     }
-    .hero-visual { justify-content: center; }
+
+    .mobile-hero-bg {
+        display: block;
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-size: cover !important;
+        background-position: center top !important; /* Prioritize top to avoid cutting off face */
+        background-repeat: no-repeat !important;
+        z-index: 1;
+    }
+
+    .mobile-hero-overlay {
+        display: block;
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to right, rgba(9,9,11,0.9) 0%, rgba(9,9,11,0.3) 100%), linear-gradient(to bottom, transparent 0%, transparent 60%, rgba(9,9,11,1) 100%);
+        z-index: 2;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        flex-direction: column;
+        padding: 2rem;
+        width: 100%;
+    }
+
+    .hero-visual { display: none !important; } /* Hide Desktop Glass Card */
+
     .hero-text { 
         display: flex; 
         flex-direction: column; 
-        align-items: center; 
-        text-align: center; 
+        align-items: flex-start; 
+        text-align: left; 
     }
-    .hero-badges, .social-links { justify-content: center !important; }
     
+    .hero-badges, .social-links { justify-content: flex-start !important; }
+    
+    /* ----------------------------------------------------------- */
+
     .section-title { font-size: 2rem; }
     .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
     
