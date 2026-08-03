@@ -32,7 +32,7 @@ body {
     line-height: 1.6; 
     min-height: 100vh;
     font-family: var(--font-body);
-    overflow-x: hidden; /* Critical to prevent horizontal scrolling */
+    overflow-x: hidden; 
 }
 
 h1, h2, h3, h4, h5, h6, .nav-text, button, .section-title { font-family: var(--font-heading); }
@@ -97,48 +97,65 @@ section {
     flex-direction: column; 
     justify-content: center; 
     scroll-margin-top: 5rem; 
-    max-width: 1100px; /* Limit width for reading */
+    max-width: 1200px; 
 }
 
-/* --- HERO SECTION --- */
+/* --- HERO SECTION (SPLIT LAYOUT) --- */
 #hero { 
-    /* Pull the section out of the 260px main padding to hit the absolute left edge */
-    margin-left: -260px; 
-    width: 100vw; 
-    height: 100vh;
-    min-height: 100vh;
-    padding: 0; 
-    display: block; 
+    min-height: 100vh; 
+    position: relative;
 }
 
-.hero-bg { 
-    width: 100%; 
-    height: 100%; 
-    background-size: cover !important; 
-    background-position: center center !important; 
-    background-repeat: no-repeat !important;
-    position: relative; /* Keeps content inside the document flow */
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+    width: 100%;
 }
 
-.hero-overlay { 
-    position: absolute; /* Cover the hero-bg completely */
-    top: 0; left: 0; width: 100%; height: 100%; 
-    background: linear-gradient(to right, rgba(9,9,11,0.95) 0%, rgba(9,9,11,0.4) 60%, rgba(9,9,11,0.8) 100%);
-    display: flex; 
-    flex-direction: column; 
-    align-items: flex-start; 
-    justify-content: center; 
-    text-align: left; 
-    
-    /* Put the padding back here so the text aligns perfectly with the other sections */
-    padding-left: 260px; 
-    padding-right: 2rem;
+.hero-text {
+    flex: 1.2;
+    max-width: 650px;
 }
 
-.hero-title { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -2px; font-weight: 800; color: #ffffff; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-.hero-subtitle { font-size: 2rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-.hero-typing { font-size: 1.5rem; font-weight: 500; color: #ffffff; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
-.hero-desc { font-size: 1.25rem; color: #e2e8f0; max-width: 600px; margin-top: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.hero-title { font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -1.5px; font-weight: 800; color: #ffffff; }
+.hero-subtitle { font-size: 1.8rem; font-weight: 600; color: var(--primary); margin-bottom: 1rem; }
+.hero-typing { font-size: 1.3rem; font-weight: 500; color: #ffffff; }
+.hero-desc { font-size: 1.15rem; color: var(--text-muted); margin-top: 1.5rem; }
+
+.hero-visual {
+    flex: 0.8;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.hero-image-wrapper {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 4/5; /* Gives it a nice portrait shape */
+    padding: 10px; /* Acts as a glass border frame */
+    border-radius: 24px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 40px rgba(56, 189, 248, 0.15); /* Soft cyan glow */
+    transform: rotate(2deg); /* Stylish slight tilt */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hero-image-wrapper:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 15px 50px rgba(56, 189, 248, 0.25);
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures your photo fills the box perfectly without stretching */
+    border-radius: 16px;
+}
+
 .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; color: rgba(255,255,255,0.7); animation: bounce 2s infinite; transition: color 0.3s; z-index: 10; transform: translateX(-50%); }
 .scroll-indicator:hover { color: var(--primary); }
 @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -15px); } 60% { transform: translate(-50%, -7px); } }
@@ -147,8 +164,14 @@ section {
 button { cursor: pointer; font-weight: 600; border-radius: 8px; border: none; transition: all 0.3s ease; }
 .btn-primary { background: rgba(56, 189, 248, 0.2); border: 1px solid var(--primary); color: var(--primary); padding: 0.6rem 1.2rem; backdrop-filter: blur(4px); text-decoration: none; display: inline-flex; justify-content: center; align-items: center;}
 .btn-primary:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+.btn-outline { background: transparent; border: 1px solid var(--glass-border); color: var(--text-main); padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; transition: all 0.3s ease; font-weight: 500;}
+.btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-main); }
 input, textarea { font-family: var(--font-body); width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: var(--text-main); border-radius: 8px; outline: none; transition: border 0.3s ease; }
 input:focus, textarea:focus { border-color: var(--primary); }
+
+@media screen and (min-width: 1025px) {
+    #education, #certifications, #projects { padding-left: 80px; }
+}
 
 .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 2rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; display: inline-block;}
 
@@ -193,21 +216,22 @@ input:focus, textarea:focus { border-color: var(--primary); }
     .nav-link { width: auto; padding: 0.5rem; justify-content: center; }
     .nav-link svg { margin: 0; width: 22px; height: 22px; } 
     
-    #hero {
-        /* Pull out of the 2rem mobile padding */
-        margin-left: -2rem;
-        width: 100vw;
+    section { padding: 4rem 0; }
+    
+    /* Mobile Hero Fix */
+    #hero { min-height: auto; padding-top: 5rem; }
+    .hero-content {
+        flex-direction: column-reverse; /* Puts image on top of text on mobile */
+        gap: 3rem;
     }
-
-    .hero-overlay { 
-        /* Restore the 2rem padding for text on mobile */
-        padding-left: 2rem; 
-        padding-right: 2rem; 
+    .hero-visual { justify-content: center; }
+    .hero-text { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center; 
     }
-
-    section {
-        padding: 4rem 0; /* Reset section padding */
-    }
+    .hero-badges, .social-links { justify-content: center !important; }
     
     .section-title { font-size: 2rem; }
     .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
