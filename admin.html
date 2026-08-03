@@ -3,202 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS Dashboard | Synthwave Terminal</title>
+    <title>CMS Dashboard | Admin</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
-
-        :root {
-            /* Synthwave Core Palette */
-            --bg-base: #060913; 
-            --panel-bg: rgba(13, 17, 30, 0.85);
-            --panel-border: rgba(30, 41, 59, 1);
-            
-            /* Text & Accents */
-            --text-main: #E2E8F0;
-            --text-muted: #64748B;
-            --danger: #EF4444;
-            --success: #10B981;
-            
-            /* Neon Matrix Variables */
-            --c-cyan: #00F0FF;
-            --c-purple: #A855F7;
-            --c-amber: #F59E0B;
-            --c-lime: #10B981;
-            --c-magenta: #EC4899;
-
-            /* Typography Engine */
-            --font-mono: 'Fira Code', 'Consolas', monospace;
-            --font-sans: 'Inter', system-ui, sans-serif;
-            --radius: 8px;
-        }
-
-        /* Cyber-Grid Background */
-        body {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: var(--font-sans);
-            color: var(--text-main);
-            height: 100vh; overflow: hidden;
-            background-color: var(--bg-base);
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            background-position: center center;
-        }
-
-        * { box-sizing: border-box; }
-        .hidden { display: none !important; }
-
-        /* Tech Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-base); }
-        ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-        /* Dual Typography Implementation */
-        h2, h3, .nav-btn, .btn-primary, .btn-outline, .saas-label, .save-indicator { 
-            font-family: var(--font-mono); 
-        }
-
-        /* Terminal Headings & Cursor */
-        h2 { 
-            font-size: 1.4rem; font-weight: 500; margin-bottom: 2.5rem; 
-            color: var(--text-main); padding-bottom: 1rem; 
-            border-bottom: 1px dashed var(--panel-border); 
-        }
+        :root { --bg-base: #060913; --panel-bg: rgba(13, 17, 30, 0.85); --panel-border: rgba(30, 41, 59, 1); --text-main: #E2E8F0; --text-muted: #64748B; --danger: #EF4444; --success: #10B981; --c-cyan: #00F0FF; --c-purple: #A855F7; --c-amber: #F59E0B; --c-lime: #10B981; --c-magenta: #EC4899; --font-mono: 'Fira Code', 'Consolas', monospace; --font-sans: 'Inter', system-ui, sans-serif; --radius: 8px; }
+        body { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-sans); color: var(--text-main); height: 100vh; overflow: hidden; background-color: var(--bg-base); background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px); background-size: 30px 30px; background-position: center center; }
+        * { box-sizing: border-box; } .hidden { display: none !important; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg-base); } ::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        h2, h3, .nav-btn, .btn-primary, .btn-outline, .saas-label, .save-indicator { font-family: var(--font-mono); }
+        h2 { font-size: 1.4rem; font-weight: 500; margin-bottom: 2.5rem; color: var(--text-main); padding-bottom: 1rem; border-bottom: 1px dashed var(--panel-border); }
         .prompt { color: var(--c-lime); font-weight: 400; margin-right: 8px; }
         .cursor { display: inline-block; width: 10px; height: 1.2rem; background-color: var(--c-cyan); vertical-align: middle; margin-left: 8px; animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
-
         .saas-label { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem; text-transform: lowercase; letter-spacing: 0.5px; display: block;}
-
-        /* Terminal Panels */
-        .terminal-panel {
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--panel-border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: var(--radius);
-        }
-
-        /* Auth Box */
-        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-box { padding: 3rem 2.5rem; width: 420px; animation: glitchIn 0.4s ease-out forwards; }
-
-        /* Dashboard Layout */
-        .dashboard { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.4s ease-out; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--panel-border); z-index: 10; background: var(--bg-base); }
-        .admin-layout { display: flex; flex: 1; overflow: hidden; margin: 1.5rem; gap: 1.5rem; }
-        
-        .sidebar { width: 280px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
-        .main-content { flex: 1; padding: 2.5rem 4rem; overflow-y: auto; }
-
-        /* Terminal Inputs */
-        .saas-input { 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid var(--panel-border); 
-            color: var(--c-cyan);
-            padding: 0.9rem 1.2rem; 
-            border-radius: var(--radius); 
-            width: 100%; 
-            margin-bottom: 2rem; 
-            font-size: 0.95rem; 
-            transition: all 0.2s ease;
-            outline: none;
-            font-family: var(--font-sans);
-        }
-        .saas-input:focus { border-color: var(--c-cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.15); }
-        .saas-input::placeholder { color: rgba(255,255,255,0.2); font-family: var(--font-sans); }
-
-        /* Hardware Buttons */
-        .btn-primary, .btn-outline { 
-            background: transparent; 
-            border: 1px solid var(--panel-border);
-            padding: 0.8rem 1.5rem; 
-            border-radius: var(--radius); 
-            cursor: pointer; 
-            font-weight: 500; 
-            font-size: 0.85rem; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
-            transition: all 0.2s ease;
-            color: var(--text-main);
-        }
-        .btn-primary { border-color: var(--c-cyan); color: var(--c-cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); }
-        .btn-primary:hover:not(:disabled) { background: rgba(0, 240, 255, 0.1); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--text-main); }
-        .btn-danger { border-color: var(--danger) !important; color: var(--danger) !important; }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.1) !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
-
-        /* Nav Buttons */
-        .nav-btn { 
-            display: flex; align-items: center; gap: 1rem; 
-            background: transparent; color: var(--text-muted); 
-            border: 1px solid transparent; padding: 0.9rem 1.2rem; 
-            border-radius: var(--radius); cursor: pointer; 
-            text-align: left; font-size: 0.85rem; font-weight: 500; 
-            transition: all 0.3s ease; text-transform: lowercase;
-        }
-        .nav-btn:hover { background: rgba(255, 255, 255, 0.03); transform: translateX(5px); }
-        .nav-btn.active { background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); }
-        .nav-icon { width: 18px; height: 18px; fill: currentColor; transition: fill 0.3s ease; }
-
-        /* Colors Matrix */
-        .nav-btn[data-tab="hero-tab"]:hover, .nav-btn[data-tab="hero-tab"].active { color: var(--c-cyan); border-color: var(--c-cyan); box-shadow: inset 4px 0 0 var(--c-cyan), 0 0 15px rgba(0, 240, 255, 0.1); }
-        .nav-btn[data-tab="edu-tab"]:hover, .nav-btn[data-tab="edu-tab"].active { color: var(--c-purple); border-color: var(--c-purple); box-shadow: inset 4px 0 0 var(--c-purple), 0 0 15px rgba(168, 85, 247, 0.1); }
-        .nav-btn[data-tab="cert-tab"]:hover, .nav-btn[data-tab="cert-tab"].active { color: var(--c-amber); border-color: var(--c-amber); box-shadow: inset 4px 0 0 var(--c-amber), 0 0 15px rgba(245, 158, 11, 0.1); }
-        .nav-btn[data-tab="proj-tab"]:hover, .nav-btn[data-tab="proj-tab"].active { color: var(--c-lime); border-color: var(--c-lime); box-shadow: inset 4px 0 0 var(--c-lime), 0 0 15px rgba(16, 185, 129, 0.1); }
-        .nav-btn[data-tab="contact-tab"]:hover, .nav-btn[data-tab="contact-tab"].active { color: var(--c-magenta); border-color: var(--c-magenta); box-shadow: inset 4px 0 0 var(--c-magenta), 0 0 15px rgba(236, 72, 153, 0.1); }
-
-        .tab-pane { display: none; max-width: 800px; margin: 0 auto; }
-        .tab-pane.active { display: block; animation: slideUpFade 0.4s cubic-bezier(0, 0, 0.2, 1) forwards; }
-
-        .accordion-item { border-radius: var(--radius); margin-bottom: 1.2rem; overflow: hidden; transition: all 0.2s ease; border: 1px solid var(--panel-border); background: rgba(0,0,0,0.3); }
-        .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; cursor: pointer; font-weight: 500; font-family: var(--font-sans); }
-        .accordion-header:hover { background: rgba(255,255,255,0.02); color: var(--c-cyan); }
-        .accordion-body { padding: 1.5rem; border-top: 1px dashed var(--panel-border); background: rgba(0,0,0,0.5); }
-
-        .save-indicator { font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .img-preview-box { width: 70px; height: 70px; border-radius: var(--radius); object-fit: cover; margin-top: 0.5rem; display: block; border: 1px dashed var(--c-cyan); background: rgba(0,0,0,0.5); }
-
-        /* --- NEW MODAL OVERLAY STYLES --- */
-        .modal-overlay { 
-            position: fixed; inset: 0; 
-            background: rgba(6, 9, 19, 0.8); 
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); 
-            z-index: 9999; display: flex; justify-content: center; align-items: center; 
-            transition: opacity 0.3s ease; 
-        }
-        .modal-box { 
-            padding: 3rem; text-align: center; width: 400px; 
-            display: flex; flex-direction: column; align-items: center; 
-            border-color: var(--c-cyan);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);
-        }
-        .spinner { 
-            width: 55px; height: 55px; 
-            border: 4px solid rgba(0, 240, 255, 0.1); 
-            border-top-color: var(--c-cyan); 
-            border-radius: 50%; 
-            animation: spin 1s linear infinite; 
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Animations */
-        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes glitchIn { 
-            0% { opacity: 0; transform: scale(0.98) translate(-10px, 5px); filter: hue-rotate(90deg); } 
-            20% { opacity: 1; transform: scale(1.02) translate(5px, -5px); filter: hue-rotate(-90deg); }
-            40% { transform: scale(0.99) translate(-5px, 0); }
-            100% { transform: scale(1) translate(0, 0); filter: hue-rotate(0deg); } 
-        }
+        .terminal-panel { background: var(--panel-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--panel-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: var(--radius); }
+        .auth-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; } .auth-box { padding: 3rem 2.5rem; width: 420px; animation: glitchIn 0.4s ease-out forwards; }
+        .dashboard { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.4s ease-out; } .admin-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--panel-border); z-index: 10; background: var(--bg-base); } .admin-layout { display: flex; flex: 1; overflow: hidden; margin: 1.5rem; gap: 1.5rem; }
+        .sidebar { width: 280px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.8rem; } .main-content { flex: 1; padding: 2.5rem 4rem; overflow-y: auto; }
+        .saas-input { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--panel-border); color: var(--c-cyan); padding: 0.9rem 1.2rem; border-radius: var(--radius); width: 100%; margin-bottom: 2rem; font-size: 0.95rem; transition: all 0.2s ease; outline: none; font-family: var(--font-sans); } .saas-input:focus { border-color: var(--c-cyan); box-shadow: 0 0 12px rgba(0, 240, 255, 0.15); } .saas-input::placeholder { color: rgba(255,255,255,0.2); font-family: var(--font-sans); }
+        .btn-primary, .btn-outline { background: transparent; border: 1px solid var(--panel-border); padding: 0.8rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-weight: 500; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease; color: var(--text-main); } .btn-primary { border-color: var(--c-cyan); color: var(--c-cyan); box-shadow: 0 0 10px rgba(0, 240, 255, 0.1); } .btn-primary:hover:not(:disabled) { background: rgba(0, 240, 255, 0.1); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); } .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; } .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--text-main); } .btn-danger { border-color: var(--danger) !important; color: var(--danger) !important; } .btn-danger:hover { background: rgba(239, 68, 68, 0.1) !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+        .nav-btn { display: flex; align-items: center; gap: 1rem; background: transparent; color: var(--text-muted); border: 1px solid transparent; padding: 0.9rem 1.2rem; border-radius: var(--radius); cursor: pointer; text-align: left; font-size: 0.95rem; font-weight: 500; transition: all 0.3s ease; text-transform: capitalize; font-family: var(--font-sans); } .nav-btn:hover { background: rgba(255, 255, 255, 0.03); transform: translateX(5px); } .nav-btn.active { background: rgba(0,0,0,0.5); border: 1px solid var(--panel-border); color: var(--text-main); } .nav-icon { width: 18px; height: 18px; fill: currentColor; transition: fill 0.3s ease; }
+        .nav-btn[data-tab="hero-tab"]:hover, .nav-btn[data-tab="hero-tab"].active { color: var(--c-cyan); border-color: var(--c-cyan); box-shadow: inset 4px 0 0 var(--c-cyan), 0 0 15px rgba(0, 240, 255, 0.1); } .nav-btn[data-tab="edu-tab"]:hover, .nav-btn[data-tab="edu-tab"].active { color: var(--c-purple); border-color: var(--c-purple); box-shadow: inset 4px 0 0 var(--c-purple), 0 0 15px rgba(168, 85, 247, 0.1); } .nav-btn[data-tab="cert-tab"]:hover, .nav-btn[data-tab="cert-tab"].active { color: var(--c-amber); border-color: var(--c-amber); box-shadow: inset 4px 0 0 var(--c-amber), 0 0 15px rgba(245, 158, 11, 0.1); } .nav-btn[data-tab="proj-tab"]:hover, .nav-btn[data-tab="proj-tab"].active { color: var(--c-lime); border-color: var(--c-lime); box-shadow: inset 4px 0 0 var(--c-lime), 0 0 15px rgba(16, 185, 129, 0.1); } .nav-btn[data-tab="contact-tab"]:hover, .nav-btn[data-tab="contact-tab"].active { color: var(--c-magenta); border-color: var(--c-magenta); box-shadow: inset 4px 0 0 var(--c-magenta), 0 0 15px rgba(236, 72, 153, 0.1); }
+        .tab-pane { display: none; max-width: 800px; margin: 0 auto; } .tab-pane.active { display: block; animation: slideUpFade 0.4s cubic-bezier(0, 0, 0.2, 1) forwards; }
+        .accordion-item { border-radius: var(--radius); margin-bottom: 1.2rem; overflow: hidden; transition: all 0.2s ease; border: 1px solid var(--panel-border); background: rgba(0,0,0,0.3); } .accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.5rem; cursor: pointer; font-weight: 500; font-family: var(--font-sans); } .accordion-header:hover { background: rgba(255,255,255,0.02); color: var(--c-cyan); } .accordion-body { padding: 1.5rem; border-top: 1px dashed var(--panel-border); background: rgba(0,0,0,0.5); }
+        .save-indicator { font-size: 0.8rem; font-weight: 500; display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;} .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); } .img-preview-box { width: 70px; height: 70px; border-radius: var(--radius); object-fit: cover; margin-top: 0.5rem; display: block; border: 1px dashed var(--c-cyan); background: rgba(0,0,0,0.5); }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(6, 9, 19, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.3s ease; } .modal-box { padding: 3rem; text-align: center; width: 400px; display: flex; flex-direction: column; align-items: center; border-color: var(--c-cyan); box-shadow: 0 0 40px rgba(0, 240, 255, 0.15); } .spinner { width: 55px; height: 55px; border: 4px solid rgba(0, 240, 255, 0.1); border-top-color: var(--c-cyan); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+        @keyframes spin { to { transform: rotate(360deg); } } @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } @keyframes glitchIn { 0% { opacity: 0; transform: scale(0.98) translate(-10px, 5px); filter: hue-rotate(90deg); } 20% { opacity: 1; transform: scale(1.02) translate(5px, -5px); filter: hue-rotate(-90deg); } 40% { transform: scale(0.99) translate(-5px, 0); } 100% { transform: scale(1) translate(0, 0); filter: hue-rotate(0deg); } }
     </style>
 </head>
 <body>
@@ -222,20 +56,20 @@
                 <div class="save-indicator" id="save-indicator"><div class="dot"></div> LINK ESTABLISHED</div>
             </div>
             <div style="display: flex; gap: 1rem;">
-                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Force Sync to Repo</button>
-                <a href="index.html" target="_blank" class="btn-outline">Preview Matrix</a>
-                <button id="logout-btn" class="btn-outline btn-danger">Kill Session</button>
+                <button id="manual-save-btn" class="btn-primary" onclick="saveStateToStorage()">Save to GitHub</button>
+                <a href="index.html" target="_blank" class="btn-outline">Preview Site</a>
+                <button id="logout-btn" class="btn-outline btn-danger">Logout</button>
             </div>
         </header>
         
         <div class="admin-layout">
             <!-- SIDEBAR NAVIGATION -->
             <aside class="sidebar terminal-panel">
-                <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> ~/hero.config</button>
-                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> ~/education.log</button>
-                <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> ~/credentials.bin</button>
-                <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> ~/projects.exe</button>
-                <button class="nav-btn" data-tab="contact-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> ~/integrations.sh</button>
+                <button class="nav-btn active" data-tab="hero-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Hero Profile</button>
+                <button class="nav-btn" data-tab="edu-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2.12-1.15V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/></svg> Education</button>
+                <button class="nav-btn" data-tab="cert-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z"/></svg> Certifications</button>
+                <button class="nav-btn" data-tab="proj-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg> Projects</button>
+                <button class="nav-btn" data-tab="contact-tab"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> Contact Form</button>
             </aside>
 
             <!-- MAIN WORKSPACE -->
@@ -243,39 +77,47 @@
                 
                 <!-- HERO TAB -->
                 <div id="hero-tab" class="tab-pane active">
-                    <h2><span class="prompt">usr@ssn-cms:~/hero$</span> init_core_profile<span class="cursor">█</span></h2>
+                    <h2>Hero Configuration</h2>
                     
-                    <label class="saas-label">const fullName =</label>
-                    <input type="text" id="h-name" class="saas-input" placeholder="String: Jane Doe" onchange="updateHero('name', this.value)">
+                    <label class="saas-label">Full Name</label>
+                    <input type="text" id="h-name" class="saas-input" placeholder="e.g. Jane Doe" onchange="updateHero('name', this.value)">
                     
-                    <label class="saas-label">const jobTitle =</label>
-                    <input type="text" id="h-title" class="saas-input" placeholder="String: Senior Frontend Engineer" onchange="updateHero('title', this.value)">
+                    <label class="saas-label">Job Title</label>
+                    <input type="text" id="h-title" class="saas-input" placeholder="e.g. Senior Frontend Engineer" onchange="updateHero('title', this.value)">
                     
-                    <label class="saas-label">const valueProposition =</label>
-                    <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="String: Building seamless web experiences..." onchange="updateHero('valueProp', this.value)"></textarea>
+                    <label class="saas-label">Bio / Value Proposition</label>
+                    <textarea id="h-valueProp" class="saas-input" rows="3" placeholder="A short description about yourself..." onchange="updateHero('valueProp', this.value)"></textarea>
                     
-                    <label class="saas-label">const dynamicText = Array(comma_separated)</label>
+                    <label class="saas-label">Typing Effect Words (Comma Separated)</label>
                     <input type="text" id="h-dynText" class="saas-input" placeholder="Coder, Designer, Creator" onchange="updateHeroMeta('dynamicText', this.value.split(',').map(s=>s.trim()))">
                     
-                    <label class="saas-label">upload_avatar(auto_compress: true)</label>
+                    <label class="saas-label">Profile Photo Upload</label>
                     <input type="file" id="h-photo" accept="image/*" class="saas-input" style="padding: 0.8rem;" onchange="handleHeroImage(this)">
                     <img id="h-photo-preview" class="img-preview-box hidden" alt="Hero Preview">
 
                     <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px dashed var(--panel-border);">
-                        <h3 style="font-size: 1.1rem; margin-bottom: 1.5rem;"><span class="prompt">></span> Meta_Toggles</h3>
-                        <label class="saas-label">const location_tag =</label>
-                        <input type="text" id="h-location" class="saas-input" placeholder="e.g. Chennai, India" onchange="updateHeroMeta('location', this.value)">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 1.5rem;">Tags & Social Links</h3>
                         
-                        <label class="saas-label">const availability_status =</label>
-                        <input type="text" id="h-avail" class="saas-input" placeholder="e.g. Available for immediate joining" onchange="updateHeroMeta('availability', this.value)">
-                        
-                        <div style="display: flex; gap: 2.5rem; margin-top: 1.5rem; padding: 1.5rem; background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); border-radius: var(--radius);">
-                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; cursor: pointer; font-weight: 500; font-family: var(--font-mono);">
-                                <input type="checkbox" id="t-social" style="width: 16px; height: 16px; accent-color: var(--c-cyan);" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showSocial = this.checked; saveStateToStorage();"> enable_social_icons
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; cursor: pointer; font-weight: 500; font-family: var(--font-mono);">
-                                <input type="checkbox" id="t-clients" style="width: 16px; height: 16px; accent-color: var(--c-cyan);" onchange="state.hero.toggles = state.hero.toggles || {}; state.hero.toggles.showClientLogos = this.checked; saveStateToStorage();"> display_client_logos
-                            </label>
+                        <div style="display: flex; gap: 1.5rem;">
+                            <div style="flex: 1;">
+                                <label class="saas-label">Location</label>
+                                <input type="text" id="h-location" class="saas-input" placeholder="e.g. Chennai, India" onchange="updateHeroMeta('location', this.value)">
+                            </div>
+                            <div style="flex: 1;">
+                                <label class="saas-label">Availability Status</label>
+                                <input type="text" id="h-avail" class="saas-input" placeholder="e.g. Immediate Joiner" onchange="updateHeroMeta('availability', this.value)">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1.5rem;">
+                            <div style="flex: 1;">
+                                <label class="saas-label">GitHub URL</label>
+                                <input type="url" id="h-github" class="saas-input" placeholder="https://github.com/yourusername" onchange="updateHeroSocial('github', this.value)">
+                            </div>
+                            <div style="flex: 1;">
+                                <label class="saas-label">LinkedIn URL</label>
+                                <input type="url" id="h-linkedin" class="saas-input" placeholder="https://linkedin.com/in/yourusername" onchange="updateHeroSocial('linkedin', this.value)">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -283,8 +125,8 @@
                 <!-- EDUCATION TAB -->
                 <div id="edu-tab" class="tab-pane">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed var(--panel-border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;"><span class="prompt">usr@ssn-cms:~/edu$</span> load_timeline<span class="cursor">█</span></h2>
-                        <button class="btn-primary" id="add-edu" style="border-color: var(--c-purple); color: var(--c-purple);">+ append_entry()</button>
+                        <h2 style="margin:0; border:none; padding:0;">Education Timeline</h2>
+                        <button class="btn-primary" id="add-edu" style="border-color: var(--c-purple); color: var(--c-purple);">+ Add Entry</button>
                     </div>
                     <div id="edu-list"></div>
                 </div>
@@ -292,8 +134,8 @@
                 <!-- CERTIFICATIONS TAB -->
                 <div id="cert-tab" class="tab-pane">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed var(--panel-border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;"><span class="prompt">usr@ssn-cms:~/certs$</span> fetch_credentials<span class="cursor">█</span></h2>
-                        <button class="btn-primary" id="add-cert" style="border-color: var(--c-amber); color: var(--c-amber);">+ append_entry()</button>
+                        <h2 style="margin:0; border:none; padding:0;">Certifications</h2>
+                        <button class="btn-primary" id="add-cert" style="border-color: var(--c-amber); color: var(--c-amber);">+ Add Entry</button>
                     </div>
                     <div id="cert-list"></div>
                 </div>
@@ -301,24 +143,24 @@
                 <!-- PROJECTS TAB -->
                 <div id="proj-tab" class="tab-pane">
                     <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px dashed var(--panel-border); margin-bottom:2rem; padding-bottom:1rem;">
-                        <h2 style="margin:0; border:none; padding:0;"><span class="prompt">usr@ssn-cms:~/proj$</span> compile_matrix<span class="cursor">█</span></h2>
-                        <button class="btn-primary" id="add-proj" style="border-color: var(--c-lime); color: var(--c-lime);">+ append_entry()</button>
+                        <h2 style="margin:0; border:none; padding:0;">Featured Projects</h2>
+                        <button class="btn-primary" id="add-proj" style="border-color: var(--c-lime); color: var(--c-lime);">+ Add Entry</button>
                     </div>
                     <div id="proj-list"></div>
                 </div>
 
                 <!-- CONTACT TAB -->
                 <div id="contact-tab" class="tab-pane">
-                    <h2><span class="prompt">usr@ssn-cms:~/contact$</span> config_endpoint<span class="cursor">█</span></h2>
+                    <h2>Contact Form Settings</h2>
                     <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.6; font-family: var(--font-sans);">Paste your endpoint URL from Web3Forms, Formspree, or Getform here. The public site will route all submissions to this secure address.</p>
-                    <label class="saas-label">export API_ENDPOINT =</label>
+                    <label class="saas-label">API Endpoint URL</label>
                     <input type="url" id="c-endpoint" class="saas-input" placeholder="https://api.web3forms.com/submit" onchange="state.contact = state.contact || {}; state.contact.formEndpoint = this.value; saveStateToStorage();">
                 </div>
             </main>
         </div>
     </div>
     
-    <!-- 🌟 NEW SAVING MODAL OVERLAY 🌟 -->
+    <!-- MODAL OVERLAY -->
     <div id="save-modal" class="modal-overlay hidden">
         <div class="modal-box terminal-panel">
             <div id="modal-spinner" class="spinner"></div>
