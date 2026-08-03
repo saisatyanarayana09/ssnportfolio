@@ -19,6 +19,9 @@
     "toggles": {
       "showSocial": true,
       "showClientLogos": true
+    },
+    "social": {
+      "github": "https://github.com/saisatyanarayana09"
     }
   },
   "education": [
